@@ -1,0 +1,6 @@
+@City_Hall_Management_Project_HostAddress = http://localhost:5009
+
+GET {{City_Hall_Management_Project_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

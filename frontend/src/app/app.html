@@ -1,0 +1,35 @@
+<section class="shell">
+  <header class="hero">
+    <p class="eyebrow">City Hall Management</p>
+    <h1>{{ title() }}</h1>
+    <p class="subtitle">A lightweight operations board showing live service requests from your API.</p>
+    <button class="refresh" type="button" (click)="loadRequests()">Refresh Requests</button>
+  </header>
+
+  <section class="panel">
+    @if (loading()) {
+      <p class="state">Loading requests...</p>
+    } @else if (error()) {
+      <p class="state error">{{ error() }}</p>
+    } @else if (requests().length === 0) {
+      <p class="state">No requests available yet.</p>
+    } @else {
+      <div class="grid">
+        @for (request of requests(); track request.id) {
+          <article class="card">
+            <div class="card-head">
+              <span class="badge">#{{ request.id }}</span>
+              <span class="status">{{ request.status }}</span>
+            </div>
+            <h2>{{ request.title }}</h2>
+            <p>{{ request.description }}</p>
+            <div class="meta">
+              <span>Opened: {{ request.createdAt | date: 'mediumDate' }}</span>
+              <span>Updated: {{ request.updatedAt | date: 'shortTime' }}</span>
+            </div>
+          </article>
+        }
+      </div>
+    }
+  </section>
+</section>
