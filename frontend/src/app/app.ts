@@ -24,7 +24,7 @@ export class App implements OnInit {
   protected readonly loading = signal(true);
   protected readonly error = signal<string | null>(null);
   protected readonly requests = signal<ServiceRequest[]>([]);
-  protected readonly baseUrl = 'http://localhost:5009';
+  protected readonly baseUrl = 'https://localhost:7248';
 
   public ngOnInit(): void {
     this.loadRequests();
@@ -40,7 +40,7 @@ export class App implements OnInit {
         this.loading.set(false);
       },
       error: () => {
-        this.error.set('Could not reach the API. Make sure the backend is running on localhost:5009.');
+        this.error.set('Could not reach the API. Make sure the backend is running on localhost:7248.');
         this.loading.set(false);
       }
     });
