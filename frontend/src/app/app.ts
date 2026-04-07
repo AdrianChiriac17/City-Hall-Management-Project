@@ -1,14 +1,20 @@
+import { Component, computed, signal, inject, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 
-interface ServiceRequest {
+interface NavLink {
+  label: string;
+  href: string;
+}
+
+export interface CityRequest {
   id: number;
   title: string;
   description: string;
   status: string;
   createdAt: string;
-  updatedAt: string;
+  citizenProfile?: { firstName: string; lastName: string };
+  department?: { name: string };
 }
 
 @Component({
@@ -18,31 +24,36 @@ interface ServiceRequest {
   styleUrl: './app.scss'
 })
 export class App implements OnInit {
-  private readonly http = inject(HttpClient);
+  private readonly authTokenKey = 'chms.authToken';
+  private http = inject(HttpClient);
 
-  protected readonly title = signal('City Hall Requests');
-  protected readonly loading = signal(true);
-  protected readonly error = signal<string | null>(null);
-  protected readonly requests = signal<ServiceRequest[]>([]);
-  protected readonly baseUrl = 'https://localhost:7248';
+  protected readonly title = signal('City Hall Management');
+  protected readonly isLoggedIn = signal(false);
+  protected readonly recentRequests = signal<CityRequest[]>([]);
 
-  public ngOnInit(): void {
-    this.loadRequests();
+  protected readonly guestLinks: NavLink[] = [
+    { label: 'Register as Citizen', href: '/register' },
+    { label: 'Log In', href: '/login' }
+  ];
+
+  protected readonly memberLinks: NavLink[] = [
+    { label: 'Profile', href: '/profile' },
+    { label: 'Dashboard', href: '/dashboard' }
+  ];
+
+  protected readonly navLinks = computed(() => this.isLoggedIn() ? this.memberLinks : this.guestLinks);
+
+  public constructor() {
+    if (typeof window !== 'undefined') {
+      this.isLoggedIn.set(Boolean(localStorage.getItem(this.authTokenKey)));
+    }
   }
 
-  protected loadRequests(): void {
-    this.loading.set(true);
-    this.error.set(null);
-
-    this.http.get<ServiceRequest[]>(`${this.baseUrl}/api/requests`).subscribe({
-      next: (data) => {
-        this.requests.set(data);
-        this.loading.set(false);
-      },
-      error: () => {
-        this.error.set('Could not reach the API. Make sure the backend is running on localhost:7248.');
-        this.loading.set(false);
-      }
-    });
+  ngOnInit() {
+    this.http.get<CityRequest[]>('https://localhost:7248/api/requests')
+      .subscribe({
+        next: (data) => this.recentRequests.set(data.slice(0, 3)), // show up to 3
+        error: (err) => console.error('Failed to fetch requests', err)
+      });
   }
 }

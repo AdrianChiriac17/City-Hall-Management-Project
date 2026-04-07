@@ -1,35 +1,141 @@
-<section class="shell">
-  <header class="hero">
-    <p class="eyebrow">City Hall Management</p>
-    <h1>{{ title() }}</h1>
-    <p class="subtitle">A lightweight operations board showing live service requests from your API.</p>
-    <button class="refresh" type="button" (click)="loadRequests()">Refresh Requests</button>
+<div class="site-shell">
+  <header class="site-header">
+    <nav class="nav">
+      <a class="brand" href="/">{{ title() }}</a>
+    </nav>
   </header>
 
-  <section class="panel">
-    @if (loading()) {
-      <p class="state">Loading requests...12345</p>
-    } @else if (error()) {
-      <p class="state error">{{ error() }}</p>
-    } @else if (requests().length === 0) {
-      <p class="state">No requests available yet.</p>
-    } @else {
-      <div class="grid">
-        @for (request of requests(); track request.id) {
-          <article class="card">
-            <div class="card-head">
-              <span class="badge">#{{ request.id }}</span>
-              <span class="status">{{ request.status }}</span>
-            </div>
-            <h2>{{ request.title }}</h2>
-            <p>{{ request.description }}</p>
-            <div class="meta">
-              <span>Opened: {{ request.createdAt | date: 'mediumDate' }}</span>
-              <span>Updated: {{ request.updatedAt | date: 'shortTime' }}</span>
-            </div>
-          </article>
-        }
+  <main class="page">
+
+  <section class="hero">
+    <div class="hero-copy">
+      <p class="eyebrow">City Hall Management</p>
+      <h1>Welcome to smarter city services</h1>
+      <p>
+        Submit civic requests, track their status, and stay connected with your local administration through one platform.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="/register">Get Started</a>
+        <a class="btn btn-ghost" href="#services">See Services</a>
       </div>
-    }
+    </div>
+    <img
+      src="https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&w=900&q=80"
+      alt="City hall building"
+    />
   </section>
-</section>
+
+  <!-- Live Backend Communication Demo -->
+  <section class="services" id="live-requests">
+    <h2>Recent Open Requests (Live)</h2>
+    <div class="service-grid">
+      @for (request of recentRequests(); track request.id) {
+        <article class="service-card" style="border-left: 4px solid var(--accent); padding-left: 1rem;">
+          <h3 style="margin-top: 0; color: var(--accent);">{{ request.title }} <small>#{{ request.id }}</small></h3>
+          <p><em>{{ request.createdAt | date:'short' }}</em> | <strong>{{ request.status }}</strong></p>
+          <p>{{ request.description }}</p>
+          <p style="font-size: 0.9em; color: gray;">
+            From: {{ request.citizenProfile?.firstName }} {{ request.citizenProfile?.lastName }}
+            @if (request.department) {
+              <br>Dept: {{ request.department.name }}
+            }
+          </p>
+        </article>
+      } @empty {
+        <article class="service-card" style="grid-column: 1 / -1; text-align: center;">
+          <p>No open requests found or waiting for backend...</p>
+        </article>
+      }
+    </div>
+  </section>
+
+  <section class="mission" id="mission">
+    <h2>Our Mission</h2>
+    <div class="mission-grid">
+      <article class="feature image-card">
+        <img
+          src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=900&q=80"
+          alt="Administrative building"
+        />
+      </article>
+      <article class="feature text-card">
+        <h3>Digital-first public services</h3>
+        <p>Citizens can submit requests online and receive updates without waiting in long queues.</p>
+      </article>
+      <article class="feature text-card">
+        <h3>Transparent request tracking</h3>
+        <p>Every request moves through visible stages so residents know exactly what happens next.</p>
+      </article>
+      <article class="feature image-card">
+        <img
+          src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=900&q=80"
+          alt="Modern city street"
+        />
+      </article>
+    </div>
+  </section>
+
+  <section class="services" id="services">
+    <h2>Key Services</h2>
+    <div class="service-grid">
+      <article class="service-card">
+        <h3>Request Management</h3>
+        <p>Create and monitor issues like permits, infrastructure, and local administration requests.</p>
+      </article>
+      <article class="service-card">
+        <h3>Department Routing</h3>
+        <p>Requests are assigned to the right city department for faster and clearer processing.</p>
+      </article>
+      <article class="service-card">
+        <h3>Status Notifications</h3>
+        <p>Receive timely updates when your request changes status or requires additional information.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="community">
+    <div class="community-gallery">
+      <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=700&q=80" alt="Citizens meeting" />
+      <img src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=700&q=80" alt="Community planning" />
+    </div>
+    <article class="community-copy">
+      <h2>Explore Community Programs</h2>
+      <ul>
+        <li>Public Safety Awareness</li>
+        <li>Neighborhood Improvement</li>
+        <li>Citizen Feedback Sessions</li>
+      </ul>
+      <a class="btn btn-primary" href="/register">Join as a Citizen</a>
+    </article>
+  </section>
+
+    <section class="cta">
+      <p class="eyebrow">City Hall Management</p>
+      <h2>Connect with us and shape your community.</h2>
+    </section>
+  </main>
+
+  <footer class="site-footer" id="contact">
+    <div class="footer-grid">
+      <section>
+        <h3>Contact</h3>
+        <p>Email: contact@cityhall.local</p>
+        <p>Phone: +40 311 234 567</p>
+        <p>Address: 12 Civic Square, City Center</p>
+      </section>
+      <section>
+        <h3>Quick Links</h3>
+        <a href="/">Home</a>
+        <a href="/register">Register as Citizen</a>
+        <a href="/login">Log In</a>
+      </section>
+      <section>
+        <h3>Resources</h3>
+        <a href="#services">Services</a>
+        <a href="#mission">Mission</a>
+        <a href="/dashboard">Dashboard</a>
+      </section>
+    </div>
+    <p class="rights">© 2026 City Hall Management. All rights reserved.</p>
+  </footer>
+</div>

@@ -3,7 +3,10 @@
   "compounds": [
     {
       "name": "Full Stack Run (frontend + backend)",
-      "configurations": ["Backend API (.NET)", "Frontend (Angular)"]
+      "configurations": [
+        "Backend API (.NET)",
+        "Frontend (Angular)"
+      ]
     }
   ],
   "configurations": [
@@ -27,7 +30,7 @@
     },
     {
       "name": "Frontend (Angular)",
-      "type": "msedge",
+      "type": "chrome",
       "request": "launch",
       "preLaunchTask": "npm: start",
       "url": "http://localhost:4200/"
