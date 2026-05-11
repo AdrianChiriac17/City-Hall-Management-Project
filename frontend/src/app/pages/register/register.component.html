@@ -1,0 +1,82 @@
+<main class="auth-page">
+  <section class="auth-wrapper">
+    <div class="auth-brand-panel">
+      <p>Primăria Municipiului Craiova</p>
+
+      <img
+        src="/images/auth/logoCityHall.png"
+        alt="Craiova City Hall logo"
+        class="city-logo"
+      />
+    </div>
+
+    <div class="auth-form-panel">
+      <h1>Sign up</h1>
+
+      <form class="auth-form">
+        <label class="field-label" for="fullName">Full Name</label>
+        <div class="input-group">
+          <input id="fullName" type="text" placeholder="Ion Popescu" />
+        </div>
+
+        <label class="field-label" for="email">Email Address</label>
+        <div class="input-group">
+          <input id="email" type="email" placeholder="ion.popescu@gmail.com" />
+        </div>
+
+        <div class="password-grid">
+          <div>
+            <label class="field-label" for="password">Password</label>
+
+            <div class="input-group">
+              <input
+                id="password"
+                [type]="showPassword ? 'text' : 'password'"
+                placeholder="**********"
+              />
+
+              <button
+                type="button"
+                class="eye-button"
+                aria-label="Show or hide password"
+                (click)="togglePasswordVisibility()"
+              >
+                👁
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label class="field-label" for="confirmPassword">Confirm Password</label>
+
+            <div class="input-group">
+              <input
+                id="confirmPassword"
+                [type]="showConfirmPassword ? 'text' : 'password'"
+                placeholder="**********"
+              />
+
+              <button
+                type="button"
+                class="eye-button"
+                aria-label="Show or hide confirm password"
+                (click)="toggleConfirmPasswordVisibility()"
+              >
+                👁
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <button type="button" class="submit-button">
+          Create Account
+        </button>
+
+        <p class="switch-text">
+          or
+          <a routerLink="/login">Log in</a>
+        </p>
+      </form>
+    </div>
+  </section>
+</main>

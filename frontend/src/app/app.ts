@@ -1,48 +1,14 @@
-import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, inject, signal } from '@angular/core';
-import { DatePipe } from '@angular/common';
-
-interface ServiceRequest {
-  id: number;
-  title: string;
-  description: string;
-  status: string;
-  createdAt: string;
-  updatedAt: string;
-}
+import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { NavbarComponent } from './shared/navbar/navbar.component';
 
 @Component({
   selector: 'app-root',
-  imports: [DatePipe],
+  standalone: true,
+  imports: [RouterOutlet, NavbarComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
-export class App implements OnInit {
-  private readonly http = inject(HttpClient);
-
-  protected readonly title = signal('City Hall Requests');
-  protected readonly loading = signal(true);
-  protected readonly error = signal<string | null>(null);
-  protected readonly requests = signal<ServiceRequest[]>([]);
-  protected readonly baseUrl = 'https://localhost:7248';
-
-  public ngOnInit(): void {
-    this.loadRequests();
-  }
-
-  protected loadRequests(): void {
-    this.loading.set(true);
-    this.error.set(null);
-
-    this.http.get<ServiceRequest[]>(`${this.baseUrl}/api/requests`).subscribe({
-      next: (data) => {
-        this.requests.set(data);
-        this.loading.set(false);
-      },
-      error: () => {
-        this.error.set('Could not reach the API. Make sure the backend is running on localhost:7248.');
-        this.loading.set(false);
-      }
-    });
-  }
+export class App {
+  protected title = 'City Hall Management';
 }

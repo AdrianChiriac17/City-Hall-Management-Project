@@ -1,0 +1,40 @@
+<header class="navbar">
+  <a routerLink="/" class="logo" (click)="closeMenu()">
+    City Hall Management
+  </a>
+
+  <button
+    class="menu-button"
+    type="button"
+    aria-label="Open navigation menu"
+    (click)="toggleMenu()"
+  >
+    ☰
+  </button>
+
+  <nav class="nav-links" [class.open]="isMenuOpen">
+    <a
+      routerLink="/"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      (click)="closeMenu()"
+    >
+      Home
+    </a>
+
+    <a href="/#services" (click)="closeMenu()">Services</a>
+    <a href="/#announcements" (click)="closeMenu()">Announcements</a>
+    <a href="/#documents" (click)="closeMenu()">Public Documents</a>
+    <a href="/#forum" (click)="closeMenu()">Forum</a>
+
+    <div class="auth-links">
+      <a class="login-link" routerLink="/login" routerLinkActive="active" (click)="closeMenu()">
+        Login
+      </a>
+
+      <a class="register-link" routerLink="/register" routerLinkActive="active" (click)="closeMenu()">
+        Register
+      </a>
+    </div>
+  </nav>
+</header>
