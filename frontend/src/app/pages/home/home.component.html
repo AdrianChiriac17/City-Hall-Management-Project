@@ -1,0 +1,135 @@
+<main class="home-page">
+  <section class="hero-section">
+    <div class="hero-content">
+      <p class="section-label">City Hall Management</p>
+
+      <h1>
+        Welcome to City Hall Management
+      </h1>
+
+      <p class="hero-description">
+        A modern platform that helps citizens communicate with the city hall,
+        submit requests and access public information faster.
+      </p>
+
+      <a href="#services" class="primary-button">
+        Learn more
+        <span>→</span>
+      </a>
+    </div>
+
+    <div class="hero-image-wrapper">
+      <img
+        src="/images/home/city-hall-hero.jpg"
+        alt="Modern city hall building"
+        class="hero-image"
+      />
+    </div>
+  </section>
+
+  <section class="mission-section">
+    <h2>Our Mission</h2>
+
+    <div class="mission-layout">
+      <img
+        src="/images/home/city-hall-building.jpg"
+        alt="City hall entrance"
+        class="mission-image"
+      />
+
+      <article class="mission-card">
+        <h3>Bringing citizens closer to public services</h3>
+
+        <p>
+          Our goal is to make city hall services easier to access, easier to
+          understand and more transparent for every citizen.
+        </p>
+      </article>
+    </div>
+  </section>
+
+  <section class="features-section">
+    <div
+      class="feature-row"
+      *ngFor="let feature of features"
+      [class.reverse]="feature.reverse"
+      [attr.id]="feature.id"
+    >
+      <article class="feature-card">
+        <h3>{{ feature.title }}</h3>
+        <h4>{{ feature.subtitle }}</h4>
+        <p>{{ feature.text }}</p>
+      </article>
+
+      <img
+        [src]="feature.image"
+        [alt]="feature.title"
+        class="feature-image"
+      />
+    </div>
+  </section>
+
+  <section class="services-section" id="services">
+    <h2>Key Services We Offer</h2>
+
+    <div class="services-grid">
+      <article class="service-card" *ngFor="let service of services">
+        <h3>{{ service.title }}</h3>
+        <p>{{ service.text }}</p>
+        <a [href]="service.anchor" class="service-button">→</a>
+      </article>
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <p class="section-label">City Hall Management</p>
+
+    <h2>
+      Connect with your city hall online.
+    </h2>
+
+    <p>
+      Create an account, follow your requests and stay informed about your community.
+    </p>
+
+    <div class="cta-actions">
+      <a routerLink="/register" class="primary-button">
+        Create account
+      </a>
+
+      <a routerLink="/login" class="secondary-button">
+        Login
+      </a>
+    </div>
+  </section>
+
+  <footer class="home-footer" id="contact">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <h3>City Hall Management</h3>
+
+        <p>
+          A digital platform for citizens, public information and city hall services.
+        </p>
+      </div>
+
+      <div class="footer-column">
+        <h4>Contact</h4>
+        <p>Phone: 123-456-7890</p>
+        <p>Email: hello@cityhall.ro</p>
+        <p>Social Media: @cityhall</p>
+      </div>
+
+      <div class="footer-column">
+        <h4>Useful Links</h4>
+
+        <nav class="footer-links">
+          <a routerLink="/about-us">About Us</a>
+          <a routerLink="/privacy-policy">Privacy Policy</a>
+          <a routerLink="/terms-and-conditions">Terms & Conditions</a>
+          <a href="#contact">Contact</a>
+        </nav>
+      </div>
+    </div>
+  </footer>
+</main>

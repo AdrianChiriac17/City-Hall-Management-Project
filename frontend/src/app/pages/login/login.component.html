@@ -1,0 +1,59 @@
+<main class="auth-page">
+  <section class="auth-wrapper">
+    <div class="auth-brand-panel">
+      <p>Primăria Municipiului Craiova</p>
+
+      <img
+        src="/images/auth/logoCityHall.png"
+        alt="Craiova City Hall logo"
+        class="city-logo"
+      />
+    </div>
+
+    <div class="auth-form-panel">
+      <h1>Log in</h1>
+
+      <form class="auth-form">
+        <label class="input-group">
+          <span class="input-icon">👤</span>
+          <input type="text" placeholder="Username" />
+        </label>
+
+        <label class="input-group">
+          <span class="input-icon">🔒</span>
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            placeholder="Password"
+          />
+
+          <button
+            type="button"
+            class="eye-button"
+            aria-label="Show or hide password"
+            (click)="togglePasswordVisibility()"
+          >
+            👁
+          </button>
+        </label>
+
+        <div class="form-options">
+          <label class="remember-option">
+            <input type="checkbox" />
+            <span>Remember Me</span>
+          </label>
+
+          <a href="#" class="forgot-link">Forgot Password?</a>
+        </div>
+
+        <button type="button" class="submit-button">
+          Log in
+        </button>
+
+        <p class="switch-text">
+          or
+          <a routerLink="/register">Sign up</a>
+        </p>
+      </form>
+    </div>
+  </section>
+</main>
