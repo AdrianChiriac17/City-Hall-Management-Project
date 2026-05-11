@@ -1,28 +1,28 @@
 <main class="auth-page">
   <section class="auth-wrapper">
     <div class="auth-brand-panel">
-      <p>Primăria Municipiului Craiova</p>
+      <p>Primaria Municipiului Craiova</p>
 
-      <img
-        src="/images/auth/logoCityHall.png"
-        alt="Craiova City Hall logo"
-        class="city-logo"
-      />
+      <div class="city-mark" aria-hidden="true">
+        <span></span>
+        <strong>CM</strong>
+      </div>
     </div>
 
     <div class="auth-form-panel">
       <h1>Log in</h1>
 
-      <form class="auth-form">
+      <form class="auth-form" [formGroup]="loginForm" (ngSubmit)="submit()">
         <label class="input-group">
-          <span class="input-icon">👤</span>
-          <input type="text" placeholder="Username" />
+          <span class="input-icon">@</span>
+          <input type="email" formControlName="email" placeholder="Email address" />
         </label>
 
         <label class="input-group">
-          <span class="input-icon">🔒</span>
+          <span class="input-icon">#</span>
           <input
             [type]="showPassword ? 'text' : 'password'"
+            formControlName="password"
             placeholder="Password"
           />
 
@@ -32,21 +32,25 @@
             aria-label="Show or hide password"
             (click)="togglePasswordVisibility()"
           >
-            👁
+            View
           </button>
         </label>
 
         <div class="form-options">
           <label class="remember-option">
-            <input type="checkbox" />
+            <input type="checkbox" formControlName="rememberMe" />
             <span>Remember Me</span>
           </label>
 
           <a href="#" class="forgot-link">Forgot Password?</a>
         </div>
 
-        <button type="button" class="submit-button">
-          Log in
+        <p *ngIf="message" class="form-message" [class.success]="isSuccess">
+          {{ message }}
+        </p>
+
+        <button type="submit" class="submit-button" [disabled]="isSubmitting">
+          {{ isSubmitting ? 'Logging in...' : 'Log in' }}
         </button>
 
         <p class="switch-text">

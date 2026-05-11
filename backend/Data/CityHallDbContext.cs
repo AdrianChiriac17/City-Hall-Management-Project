@@ -1,12 +1,13 @@
 using City_Hall_Management_Project.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace City_Hall_Management_Project.Data;
 
-public class CityHallDbContext(DbContextOptions<CityHallDbContext> options) : DbContext(options)
+public class CityHallDbContext(DbContextOptions<CityHallDbContext> options) : IdentityDbContext<User, Role, int>(options)
 {
-    public DbSet<User> Users => Set<User>();
-    public DbSet<Role> Roles => Set<Role>();
+    public new DbSet<User> Users => Set<User>();
+    public new DbSet<Role> Roles => Set<Role>();
     public DbSet<Permission> Permissions => Set<Permission>();
     public DbSet<CitizenProfile> CitizenProfiles => Set<CitizenProfile>();
     public DbSet<EmployeeProfile> EmployeeProfiles => Set<EmployeeProfile>();
@@ -19,19 +20,13 @@ public class CityHallDbContext(DbContextOptions<CityHallDbContext> options) : Db
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
+
         modelBuilder.Entity<RequestDocument>()
             .HasKey(rd => new { rd.RequestId, rd.DocumentId });
 
         modelBuilder.Entity<RequestAssignment>()
             .HasKey(ra => new { ra.RequestId, ra.EmployeeProfileId });
-
-        modelBuilder.Entity<User>()
-            .HasIndex(u => u.Username)
-            .IsUnique();
-
-        modelBuilder.Entity<User>()
-            .HasIndex(u => u.Email)
-            .IsUnique();
 
         modelBuilder.Entity<CitizenProfile>()
             .HasOne(c => c.User)
@@ -56,7 +51,5 @@ public class CityHallDbContext(DbContextOptions<CityHallDbContext> options) : Db
             .WithMany(u => u.RequestHistoryEntries)
             .HasForeignKey(h => h.ChangedByUserId)
             .OnDelete(DeleteBehavior.Restrict);
-
-        base.OnModelCreating(modelBuilder);
     }
 }

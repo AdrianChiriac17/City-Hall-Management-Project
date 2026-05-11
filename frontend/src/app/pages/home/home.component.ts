@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, inject } from '@angular/core';
 import { NgFor } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { AuthService } from '../../services/auth.service';
 
 interface HomeFeature {
   id?: string;
@@ -24,7 +26,12 @@ interface ServiceCard {
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent {
+export class HomeComponent implements OnDestroy {
+  private readonly authService = inject(AuthService);
+  private readonly authSubscription: Subscription;
+
+  isLoggedIn = false;
+
   readonly features: HomeFeature[] = [
     {
       id: 'requests',
@@ -81,4 +88,14 @@ export class HomeComponent {
       anchor: '#announcements'
     }
   ];
+
+  constructor() {
+    this.authSubscription = this.authService.currentUser$.subscribe(user => {
+      this.isLoggedIn = user !== null;
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.authSubscription.unsubscribe();
+  }
 }

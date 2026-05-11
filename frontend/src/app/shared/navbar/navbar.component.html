@@ -9,7 +9,7 @@
     aria-label="Open navigation menu"
     (click)="toggleMenu()"
   >
-    ☰
+    Menu
   </button>
 
   <nav class="nav-links" [class.open]="isMenuOpen">
@@ -27,7 +27,28 @@
     <a href="/#documents" (click)="closeMenu()">Public Documents</a>
     <a href="/#forum" (click)="closeMenu()">Forum</a>
 
-    <div class="auth-links">
+    <div class="user-menu" [class.is-hidden]="!currentUser">
+      <button
+        type="button"
+        class="welcome-button"
+        [class.active]="isUserMenuOpen"
+        (click)="toggleUserMenu()"
+      >
+        Welcome, {{ currentUser?.firstName || currentUser?.email }}
+      </button>
+
+      <div class="user-dropdown" [class.is-hidden]="!isUserMenuOpen">
+        <button type="button" class="dropdown-item" (click)="closeMenu()">
+          Profile
+        </button>
+
+        <button type="button" class="dropdown-item logout-item" (click)="logout()">
+          Log out
+        </button>
+      </div>
+    </div>
+
+    <div class="auth-links" [class.is-hidden]="currentUser">
       <a class="login-link" routerLink="/login" routerLinkActive="active" (click)="closeMenu()">
         Login
       </a>

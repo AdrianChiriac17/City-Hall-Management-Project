@@ -1,27 +1,37 @@
 <main class="auth-page">
   <section class="auth-wrapper">
     <div class="auth-brand-panel">
-      <p>Primăria Municipiului Craiova</p>
+      <p>Primaria Municipiului Craiova</p>
 
-      <img
-        src="/images/auth/logoCityHall.png"
-        alt="Craiova City Hall logo"
-        class="city-logo"
-      />
+      <div class="city-mark" aria-hidden="true">
+        <span></span>
+        <strong>CM</strong>
+      </div>
     </div>
 
     <div class="auth-form-panel">
       <h1>Sign up</h1>
 
-      <form class="auth-form">
-        <label class="field-label" for="fullName">Full Name</label>
-        <div class="input-group">
-          <input id="fullName" type="text" placeholder="Ion Popescu" />
+      <form class="auth-form" [formGroup]="registerForm" (ngSubmit)="submit()">
+        <div class="name-grid">
+          <div>
+            <label class="field-label" for="firstName">First Name</label>
+            <div class="input-group">
+              <input id="firstName" type="text" formControlName="firstName" placeholder="Ion" />
+            </div>
+          </div>
+
+          <div>
+            <label class="field-label" for="lastName">Last Name</label>
+            <div class="input-group">
+              <input id="lastName" type="text" formControlName="lastName" placeholder="Popescu" />
+            </div>
+          </div>
         </div>
 
         <label class="field-label" for="email">Email Address</label>
         <div class="input-group">
-          <input id="email" type="email" placeholder="ion.popescu@gmail.com" />
+          <input id="email" type="email" formControlName="email" placeholder="ion.popescu@gmail.com" />
         </div>
 
         <div class="password-grid">
@@ -32,6 +42,7 @@
               <input
                 id="password"
                 [type]="showPassword ? 'text' : 'password'"
+                formControlName="password"
                 placeholder="**********"
               />
 
@@ -41,7 +52,7 @@
                 aria-label="Show or hide password"
                 (click)="togglePasswordVisibility()"
               >
-                👁
+                View
               </button>
             </div>
           </div>
@@ -53,6 +64,7 @@
               <input
                 id="confirmPassword"
                 [type]="showConfirmPassword ? 'text' : 'password'"
+                formControlName="confirmPassword"
                 placeholder="**********"
               />
 
@@ -62,14 +74,18 @@
                 aria-label="Show or hide confirm password"
                 (click)="toggleConfirmPasswordVisibility()"
               >
-                👁
+                View
               </button>
             </div>
           </div>
         </div>
 
-        <button type="button" class="submit-button">
-          Create Account
+        <p *ngIf="message" class="form-message" [class.success]="isSuccess">
+          {{ message }}
+        </p>
+
+        <button type="submit" class="submit-button" [disabled]="isSubmitting">
+          {{ isSubmitting ? 'Creating...' : 'Create Account' }}
         </button>
 
         <p class="switch-text">
