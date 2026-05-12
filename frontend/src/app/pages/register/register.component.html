@@ -55,27 +55,19 @@
                 [attr.aria-pressed]="showPassword"
                 (click)="togglePasswordVisibility()"
               >
-                <svg
-                  *ngIf="!showPassword"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                  focusable="false"
-                >
-                  <path d="M2.1 12s3.6-6.5 9.9-6.5S21.9 12 21.9 12s-3.6 6.5-9.9 6.5S2.1 12 2.1 12Z" />
-                  <circle cx="12" cy="12" r="3" />
-                </svg>
-
-                <svg
-                  *ngIf="showPassword"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                  focusable="false"
-                >
-                  <path d="M3 3l18 18" />
-                  <path d="M10.6 5.7A10.6 10.6 0 0 1 12 5.5c6.3 0 9.9 6.5 9.9 6.5a18.4 18.4 0 0 1-2.6 3.4" />
-                  <path d="M6.5 6.8A18.2 18.2 0 0 0 2.1 12s3.6 6.5 9.9 6.5c1.5 0 2.8-.4 4-1" />
-                  <path d="M9.9 9.9A3 3 0 0 0 14.1 14.1" />
-                </svg>
+                @if (!showPassword) {
+                  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path d="M2.1 12s3.6-6.5 9.9-6.5S21.9 12 21.9 12s-3.6 6.5-9.9 6.5S2.1 12 2.1 12Z" />
+                    <circle cx="12" cy="12" r="3" />
+                  </svg>
+                } @else {
+                  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path d="M3 3l18 18" />
+                    <path d="M10.6 5.7A10.6 10.6 0 0 1 12 5.5c6.3 0 9.9 6.5 9.9 6.5a18.4 18.4 0 0 1-2.6 3.4" />
+                    <path d="M6.5 6.8A18.2 18.2 0 0 0 2.1 12s3.6 6.5 9.9 6.5c1.5 0 2.8-.4 4-1" />
+                    <path d="M9.9 9.9A3 3 0 0 0 14.1 14.1" />
+                  </svg>
+                }
               </button>
             </div>
           </div>
@@ -100,35 +92,29 @@
                 [attr.aria-pressed]="showConfirmPassword"
                 (click)="toggleConfirmPasswordVisibility()"
               >
-                <svg
-                  *ngIf="!showConfirmPassword"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                  focusable="false"
-                >
-                  <path d="M2.1 12s3.6-6.5 9.9-6.5S21.9 12 21.9 12s-3.6 6.5-9.9 6.5S2.1 12 2.1 12Z" />
-                  <circle cx="12" cy="12" r="3" />
-                </svg>
-
-                <svg
-                  *ngIf="showConfirmPassword"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                  focusable="false"
-                >
-                  <path d="M3 3l18 18" />
-                  <path d="M10.6 5.7A10.6 10.6 0 0 1 12 5.5c6.3 0 9.9 6.5 9.9 6.5a18.4 18.4 0 0 1-2.6 3.4" />
-                  <path d="M6.5 6.8A18.2 18.2 0 0 0 2.1 12s3.6 6.5 9.9 6.5c1.5 0 2.8-.4 4-1" />
-                  <path d="M9.9 9.9A3 3 0 0 0 14.1 14.1" />
-                </svg>
+                @if (!showConfirmPassword) {
+                  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path d="M2.1 12s3.6-6.5 9.9-6.5S21.9 12 21.9 12s-3.6 6.5-9.9 6.5S2.1 12 2.1 12Z" />
+                    <circle cx="12" cy="12" r="3" />
+                  </svg>
+                } @else {
+                  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path d="M3 3l18 18" />
+                    <path d="M10.6 5.7A10.6 10.6 0 0 1 12 5.5c6.3 0 9.9 6.5 9.9 6.5a18.4 18.4 0 0 1-2.6 3.4" />
+                    <path d="M6.5 6.8A18.2 18.2 0 0 0 2.1 12s3.6 6.5 9.9 6.5c1.5 0 2.8-.4 4-1" />
+                    <path d="M9.9 9.9A3 3 0 0 0 14.1 14.1" />
+                  </svg>
+                }
               </button>
             </div>
           </div>
         </div>
 
-        <p *ngIf="message" class="form-message" [class.success]="isSuccess">
-          {{ message }}
-        </p>
+        @if (message) {
+          <p class="form-message" [class.success]="isSuccess">
+            {{ message }}
+          </p>
+        }
 
         <button type="submit" class="submit-button" [disabled]="isSubmitting">
           {{ isSubmitting ? 'Creating...' : 'Create Account' }}

@@ -1,7 +1,7 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, afterNextRender, inject } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { AuthService, CurrentUser } from '../../services/auth.service';
+import { AuthService } from '../../services/auth.service';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-navbar',
@@ -10,29 +10,21 @@ import { AuthService, CurrentUser } from '../../services/auth.service';
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css']
 })
-export class NavbarComponent implements OnInit, OnDestroy {
+export class NavbarComponent {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
-  private readonly authSubscription: Subscription;
 
   isMenuOpen = false;
   isUserMenuOpen = false;
-  currentUser: CurrentUser | null = null;
+
+  readonly currentUser = toSignal(this.authService.currentUser$, { initialValue: null });
 
   constructor() {
-    this.authSubscription = this.authService.currentUser$.subscribe(user => {
-      this.currentUser = user;
+    afterNextRender(() => {
+      this.authService.loadCurrentUser().subscribe({
+        error: () => this.authService.clearCurrentUser()
+      });
     });
-  }
-
-  ngOnInit(): void {
-    this.authService.loadCurrentUser().subscribe({
-      error: () => this.authService.clearCurrentUser()
-    });
-  }
-
-  ngOnDestroy(): void {
-    this.authSubscription.unsubscribe();
   }
 
   toggleMenu(): void {

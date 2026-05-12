@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface RegisterRequest {
   firstName: string;
@@ -34,7 +35,7 @@ export interface CurrentUser {
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly apiUrl = 'http://localhost:5009/api/auth';
+  private readonly apiUrl = `${environment.apiUrl}/auth`;
   private readonly currentUserSubject = new BehaviorSubject<CurrentUser | null>(null);
 
   currentUser$ = this.currentUserSubject.asObservable();

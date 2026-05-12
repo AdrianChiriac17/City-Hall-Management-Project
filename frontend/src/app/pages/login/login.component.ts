@@ -1,5 +1,4 @@
-import { Component, inject } from '@angular/core';
-import { NgIf } from '@angular/common';
+import { Component, inject, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { finalize, switchMap } from 'rxjs';
@@ -8,7 +7,7 @@ import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [NgIf, ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
@@ -16,6 +15,7 @@ export class LoginComponent {
   private readonly formBuilder = inject(FormBuilder);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   showPassword = false;
   isSubmitting = false;
@@ -56,6 +56,7 @@ export class LoginComponent {
       }),
       finalize(() => {
         this.isSubmitting = false;
+        this.cdr.detectChanges();
       })
     ).subscribe({
       next: () => {
@@ -63,6 +64,8 @@ export class LoginComponent {
       },
       error: error => {
         this.message = error.error?.message || 'Login failed. Please check your credentials.';
+        this.isSuccess = false;
+        this.cdr.detectChanges();
       }
     });
   }

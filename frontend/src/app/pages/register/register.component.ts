@@ -1,5 +1,4 @@
-import { Component, inject } from '@angular/core';
-import { NgIf } from '@angular/common';
+import { Component, inject, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
@@ -8,7 +7,7 @@ import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [NgIf, ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css']
 })
@@ -16,6 +15,7 @@ export class RegisterComponent {
   private readonly formBuilder = inject(FormBuilder);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   showPassword = false;
   showConfirmPassword = false;
@@ -69,6 +69,7 @@ export class RegisterComponent {
     }).pipe(
       finalize(() => {
         this.isSubmitting = false;
+        this.cdr.detectChanges();
       })
     ).subscribe({
       next: response => {
@@ -76,9 +77,12 @@ export class RegisterComponent {
         this.message = response.message || 'Account created successfully.';
         this.registerForm.reset();
         setTimeout(() => this.router.navigate(['/login']), 700);
+        this.cdr.detectChanges();
       },
       error: error => {
         this.message = error.error?.message || 'Registration failed. Please try again.';
+        this.isSuccess = false;
+        this.cdr.detectChanges();
       }
     });
   }

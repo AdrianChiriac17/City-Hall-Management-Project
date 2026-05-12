@@ -27,35 +27,37 @@
     <a href="/#documents" (click)="closeMenu()">Public Documents</a>
     <a href="/#forum" (click)="closeMenu()">Forum</a>
 
-    <div class="user-menu" [class.is-hidden]="!currentUser">
-      <button
-        type="button"
-        class="welcome-button"
-        [class.active]="isUserMenuOpen"
-        (click)="toggleUserMenu()"
-      >
-        Welcome, {{ currentUser?.firstName || currentUser?.email }}
-      </button>
-
-      <div class="user-dropdown" [class.is-hidden]="!isUserMenuOpen">
-        <button type="button" class="dropdown-item" (click)="closeMenu()">
-          Profile
+    @if (currentUser(); as user) {
+      <div class="user-menu">
+        <button
+          type="button"
+          class="welcome-button"
+          [class.active]="isUserMenuOpen"
+          (click)="toggleUserMenu()"
+        >
+          Welcome, {{ user.firstName || user.email }}
         </button>
 
-        <button type="button" class="dropdown-item logout-item" (click)="logout()">
-          Log out
-        </button>
+        <div class="user-dropdown" [class.is-hidden]="!isUserMenuOpen">
+          <button type="button" class="dropdown-item" (click)="closeMenu()">
+            Profile
+          </button>
+
+          <button type="button" class="dropdown-item logout-item" (click)="logout()">
+            Log out
+          </button>
+        </div>
       </div>
-    </div>
+    } @else {
+      <div class="auth-links">
+        <a class="login-link" routerLink="/login" routerLinkActive="active" (click)="closeMenu()">
+          Login
+        </a>
 
-    <div class="auth-links" [class.is-hidden]="currentUser">
-      <a class="login-link" routerLink="/login" routerLinkActive="active" (click)="closeMenu()">
-        Login
-      </a>
-
-      <a class="register-link" routerLink="/register" routerLinkActive="active" (click)="closeMenu()">
-        Register
-      </a>
-    </div>
+        <a class="register-link" routerLink="/register" routerLinkActive="active" (click)="closeMenu()">
+          Register
+        </a>
+      </div>
+    }
   </nav>
 </header>
