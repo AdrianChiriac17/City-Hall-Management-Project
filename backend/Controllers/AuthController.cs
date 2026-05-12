@@ -103,7 +103,7 @@ public class AuthController(
             });
         }
 
-        var result = await signInManager.PasswordSignInAsync(user, dto.Password, dto.RememberMe, lockoutOnFailure: true);
+        var result = await signInManager.PasswordSignInAsync(user, dto.Password, isPersistent: false, lockoutOnFailure: true);
         logger.LogInformation("PasswordSignInAsync completed in {ElapsedMilliseconds}ms with result {Succeeded}", stopwatch.ElapsedMilliseconds, result.Succeeded);
 
         if (result.IsLockedOut)

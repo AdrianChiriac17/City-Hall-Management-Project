@@ -24,8 +24,7 @@ export class LoginComponent {
 
   loginForm = this.formBuilder.group({
     email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required]],
-    rememberMe: [false]
+    password: ['', [Validators.required]]
   });
 
   togglePasswordVisibility(): void {
@@ -46,8 +45,7 @@ export class LoginComponent {
     this.isSubmitting = true;
     this.authService.login({
       email: formValue.email ?? '',
-      password: formValue.password ?? '',
-      rememberMe: formValue.rememberMe ?? false
+      password: formValue.password ?? ''
     }).pipe(
       switchMap(response => {
         this.isSuccess = response.success;
