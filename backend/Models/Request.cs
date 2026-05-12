@@ -2,9 +2,9 @@ namespace City_Hall_Management_Project.Models;
 
 public class Request
 {
-    public int Id { get; set; }
-    public int CitizenProfileId { get; set; }
-    public int? DepartmentId { get; set; }
+    public Guid Id { get; set; }
+    public Guid CitizenProfileId { get; set; }
+    public Guid? DepartmentId { get; set; }
     public string Title { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public string Status { get; set; } = "Submitted";

@@ -3,6 +3,7 @@
 # =========================
 backend/bin/
 backend/obj/
+backend/DataProtectionKeys/
 .vs/
 *.user
 *.userosscache

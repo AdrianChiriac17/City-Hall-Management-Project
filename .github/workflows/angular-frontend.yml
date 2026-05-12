@@ -19,6 +19,9 @@ on:
       - '.github/workflows/frontend-build.yml'
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   build-frontend:
     runs-on: ubuntu-latest

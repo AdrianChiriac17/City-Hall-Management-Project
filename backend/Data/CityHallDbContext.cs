@@ -1,15 +1,16 @@
 using City_Hall_Management_Project.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace City_Hall_Management_Project.Data;
 
-public class CityHallDbContext(DbContextOptions<CityHallDbContext> options) : DbContext(options)
+public class CityHallDbContext(DbContextOptions<CityHallDbContext> options) : IdentityDbContext<User, Role, Guid>(options)
 {
-    public DbSet<User> Users => Set<User>();
-    public DbSet<Role> Roles => Set<Role>();
-    public DbSet<Permission> Permissions => Set<Permission>();
+    public new DbSet<User> Users => Set<User>();
+    public new DbSet<Role> Roles => Set<Role>();
     public DbSet<CitizenProfile> CitizenProfiles => Set<CitizenProfile>();
     public DbSet<EmployeeProfile> EmployeeProfiles => Set<EmployeeProfile>();
+    public DbSet<EmployeeInDepartment> EmployeeInDepartments => Set<EmployeeInDepartment>();
     public DbSet<Department> Departments => Set<Department>();
     public DbSet<Request> Requests => Set<Request>();
     public DbSet<RequestHistory> RequestHistory => Set<RequestHistory>();
@@ -19,19 +20,25 @@ public class CityHallDbContext(DbContextOptions<CityHallDbContext> options) : Db
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
+
         modelBuilder.Entity<RequestDocument>()
             .HasKey(rd => new { rd.RequestId, rd.DocumentId });
+
+        modelBuilder.Entity<RequestDocument>()
+            .HasOne(rd => rd.Document)
+            .WithMany(d => d.RequestLinks)
+            .HasForeignKey(rd => rd.DocumentId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<RequestAssignment>()
             .HasKey(ra => new { ra.RequestId, ra.EmployeeProfileId });
 
-        modelBuilder.Entity<User>()
-            .HasIndex(u => u.Username)
-            .IsUnique();
-
-        modelBuilder.Entity<User>()
-            .HasIndex(u => u.Email)
-            .IsUnique();
+        modelBuilder.Entity<RequestAssignment>()
+            .HasOne(ra => ra.EmployeeProfile)
+            .WithMany(e => e.AssignedRequests)
+            .HasForeignKey(ra => ra.EmployeeProfileId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<CitizenProfile>()
             .HasOne(c => c.User)
@@ -45,18 +52,31 @@ public class CityHallDbContext(DbContextOptions<CityHallDbContext> options) : Db
             .HasForeignKey<EmployeeProfile>(e => e.UserId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.Entity<Department>()
-            .HasOne(d => d.HeadEmployee)
+        modelBuilder.Entity<EmployeeInDepartment>()
+            .HasKey(ed => new { ed.EmployeeProfileId, ed.DepartmentId });
+
+        modelBuilder.Entity<EmployeeInDepartment>()
+            .HasOne(ed => ed.EmployeeProfile)
+            .WithMany(e => e.DepartmentRoles)
+            .HasForeignKey(ed => ed.EmployeeProfileId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<EmployeeInDepartment>()
+            .HasOne(ed => ed.Department)
+            .WithMany(d => d.Employees)
+            .HasForeignKey(ed => ed.DepartmentId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<EmployeeInDepartment>()
+            .HasOne(ed => ed.ReportsToEmployee)
             .WithMany()
-            .HasForeignKey(d => d.HeadEmployeeId)
-            .OnDelete(DeleteBehavior.SetNull);
+            .HasForeignKey(ed => ed.ReportsToEmployeeId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<RequestHistory>()
             .HasOne(h => h.ChangedByUser)
             .WithMany(u => u.RequestHistoryEntries)
             .HasForeignKey(h => h.ChangedByUserId)
             .OnDelete(DeleteBehavior.Restrict);
-
-        base.OnModelCreating(modelBuilder);
     }
 }
