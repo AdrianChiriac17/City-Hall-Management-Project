@@ -23,8 +23,8 @@ public class RequestsController(CityHallDbContext dbContext) : ControllerBase
         return Ok(requests);
     }
 
-    [HttpGet("{id:int}")]
-    public async Task<ActionResult<Request>> GetById(int id)
+    [HttpGet("{id:guid}")]
+    public async Task<ActionResult<Request>> GetById(Guid id)
     {
         var request = await dbContext.Requests
             .Include(r => r.CitizenProfile)
@@ -75,8 +75,8 @@ public class RequestsController(CityHallDbContext dbContext) : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = request.Id }, request);
     }
 
-    [HttpPut("{id:int}/status")]
-    public async Task<ActionResult<Request>> UpdateStatus(int id, UpdateRequestStatusDto dto)
+    [HttpPut("{id:guid}/status")]
+    public async Task<ActionResult<Request>> UpdateStatus(Guid id, UpdateRequestStatusDto dto)
     {
         var request = await dbContext.Requests.FirstOrDefaultAsync(r => r.Id == id);
         if (request is null)
@@ -107,8 +107,8 @@ public class RequestsController(CityHallDbContext dbContext) : ControllerBase
         return Ok(request);
     }
 
-    [HttpDelete("{id:int}")]
-    public async Task<IActionResult> Delete(int id)
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> Delete(Guid id)
     {
         var request = await dbContext.Requests.FirstOrDefaultAsync(r => r.Id == id);
         if (request is null)

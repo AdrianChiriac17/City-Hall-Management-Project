@@ -11,8 +11,12 @@ public static class SeedData
         RoleManager<Role> roleManager,
         UserManager<User> userManager)
     {
-        await SeedRoleAsync(roleManager, "Citizen", "Public user");
-        await SeedRoleAsync(roleManager, "Clerk", "City hall employee");
+        // Seed standard application roles
+        await SeedRoleAsync(roleManager, "System Administrator", "Manages system configuration and user accounts.");
+        await SeedRoleAsync(roleManager, "Department Manager", "Supervises employees and departmental activities.");
+        await SeedRoleAsync(roleManager, "Employee", "Handles administrative tasks and document processing.");
+        await SeedRoleAsync(roleManager, "Forum Administrator", "Monitors forum discussions and ensures respectful communication.");
+        await SeedRoleAsync(roleManager, "Citizen", "External user who interacts with the City Hall.");
 
         if (await dbContext.Users.AnyAsync())
         {
@@ -38,7 +42,7 @@ public static class SeedData
         };
 
         await CreateUserAsync(userManager, citizenUser, "Password123", "Citizen");
-        await CreateUserAsync(userManager, employeeUser, "Password123", "Clerk");
+        await CreateUserAsync(userManager, employeeUser, "Password123", "Employee");
 
         var citizenProfile = new CitizenProfile
         {
@@ -56,13 +60,17 @@ public static class SeedData
         var employeeProfile = new EmployeeProfile
         {
             User = employeeUser,
-            Department = department,
             EmployeeNumber = "EMP-0001",
-            JobTitle = "Service Clerk",
-            IsDepartmentHead = true
+            JobTitle = "Service Clerk"
         };
-
-        department.HeadEmployee = employeeProfile;
+        
+        var employeeInDept = new EmployeeInDepartment
+        {
+            EmployeeProfile = employeeProfile,
+            Department = department,
+            IsDepartmentHead = true,
+            ReportsToEmployee = null
+        };
 
         var request = new Request
         {
@@ -73,7 +81,7 @@ public static class SeedData
             Status = "Submitted"
         };
 
-        dbContext.AddRange(citizenProfile, employeeProfile, department, request);
+        dbContext.AddRange(citizenProfile, employeeProfile, department, employeeInDept, request);
 
         await dbContext.SaveChangesAsync();
     }

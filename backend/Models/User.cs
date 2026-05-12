@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace City_Hall_Management_Project.Models;
 
-public class User : IdentityUser<int>
+public class User : IdentityUser<Guid>
 {
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;

@@ -2,8 +2,8 @@ namespace City_Hall_Management_Project.Models;
 
 public class RequestAssignment
 {
-    public int RequestId { get; set; }
-    public int EmployeeProfileId { get; set; }
+    public Guid RequestId { get; set; }
+    public Guid EmployeeProfileId { get; set; }
     public DateTime AssignedAt { get; set; } = DateTime.UtcNow;
     public string Notes { get; set; } = string.Empty;
 

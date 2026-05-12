@@ -2,8 +2,8 @@ namespace City_Hall_Management_Project.Models;
 
 public class Document
 {
-    public int Id { get; set; }
-    public int OwnerUserId { get; set; }
+    public Guid Id { get; set; }
+    public Guid OwnerUserId { get; set; }
     public string FileName { get; set; } = string.Empty;
     public string FileType { get; set; } = string.Empty;
     public long FileSizeBytes { get; set; }
