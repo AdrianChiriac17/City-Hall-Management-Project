@@ -9,7 +9,7 @@ html {
 body {
   margin: 0;
   min-height: 100vh;
-  background: #2d4356;
+  background: #1e3347;
 }
 
 button,
@@ -22,4 +22,13 @@ select {
 img {
   max-width: 100%;
   display: block;
+}
+
+/* Offset for fixed navbar (68px height) */
+.page-body {
+  padding-top: 68px;
+}
+
+.page-body.no-pad {
+  padding-top: 0;
 }

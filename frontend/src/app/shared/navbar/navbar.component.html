@@ -1,7 +1,5 @@
 <header class="navbar">
-  <a routerLink="/" class="logo" (click)="closeMenu()">
-    City Hall Management
-  </a>
+  <a routerLink="/" class="logo" (click)="closeMenu()">City Hall Management</a>
 
   <button
     class="menu-button"
@@ -9,54 +7,53 @@
     aria-label="Open navigation menu"
     (click)="toggleMenu()"
   >
-    Menu
+    &#9776;
   </button>
 
   <nav class="nav-links" [class.open]="isMenuOpen">
+    <!-- Always visible -->
     <a
       routerLink="/"
       routerLinkActive="active"
       [routerLinkActiveOptions]="{ exact: true }"
       (click)="closeMenu()"
-    >
-      Home
-    </a>
+    >Home</a>
 
-    <a href="/#services" (click)="closeMenu()">Services</a>
-    <a href="/#announcements" (click)="closeMenu()">Announcements</a>
-    <a href="/#documents" (click)="closeMenu()">Public Documents</a>
-    <a href="/#forum" (click)="closeMenu()">Forum</a>
+    <a
+      routerLink="/forum"
+      routerLinkActive="active"
+      (click)="closeMenu()"
+    >Forum</a>
 
-    @if (currentUser(); as user) {
-      <div class="user-menu">
-        <button
-          type="button"
-          class="welcome-button"
-          [class.active]="isUserMenuOpen"
-          (click)="toggleUserMenu()"
-        >
-          Welcome, {{ user.firstName || user.email }}
-        </button>
+    <a
+      routerLink="/chatbot"
+      routerLinkActive="active"
+      (click)="closeMenu()"
+    >Chat Bot</a>
 
-        <div class="user-dropdown" [class.is-hidden]="!isUserMenuOpen">
-          <button type="button" class="dropdown-item" (click)="closeMenu()">
-            Profile
-          </button>
+    <!-- Auth-gated links -->
+    @if (currentUser()) {
+      <a
+        routerLink="/dashboard"
+        routerLinkActive="active"
+        (click)="closeMenu()"
+      >Dashboard</a>
 
-          <button type="button" class="dropdown-item logout-item" (click)="logout()">
-            Log out
-          </button>
-        </div>
-      </div>
+      <a
+        routerLink="/profile"
+        routerLinkActive="active"
+        (click)="closeMenu()"
+      >Profile</a>
+
+      <button
+        type="button"
+        class="logout-btn"
+        (click)="logout()"
+      >Logout</button>
     } @else {
       <div class="auth-links">
-        <a class="login-link" routerLink="/login" routerLinkActive="active" (click)="closeMenu()">
-          Login
-        </a>
-
-        <a class="register-link" routerLink="/register" routerLinkActive="active" (click)="closeMenu()">
-          Register
-        </a>
+        <a class="login-link" routerLink="/login" routerLinkActive="active" (click)="closeMenu()">Login</a>
+        <a class="register-link" routerLink="/register" routerLinkActive="active" (click)="closeMenu()">Register</a>
       </div>
     }
   </nav>

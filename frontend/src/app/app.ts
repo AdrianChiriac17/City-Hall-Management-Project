@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
 import { NavbarComponent } from './shared/navbar/navbar.component';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { filter, map, startWith } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -11,4 +13,14 @@ import { NavbarComponent } from './shared/navbar/navbar.component';
 })
 export class App {
   protected title = 'City Hall Management';
+  private readonly router = inject(Router);
+
+  readonly isAuthPage = toSignal(
+    this.router.events.pipe(
+      filter((e): e is NavigationEnd => e instanceof NavigationEnd),
+      map(e => ['/login', '/register'].includes(e.urlAfterRedirects)),
+      startWith(['/login', '/register'].includes(this.router.url))
+    ),
+    { initialValue: false }
+  );
 }
