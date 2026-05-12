@@ -17,11 +17,11 @@ public class AuthController(
     public async Task<ActionResult<AuthResponseDto>> Register(RegisterRequestDto dto)
     {
         var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-        logger.LogInformation("Registration request started for {Email}", dto.Email);
+        logger.LogInformation("Registration request started");
 
         if (dto.Password != dto.ConfirmPassword)
         {
-            logger.LogWarning("Registration failed for {Email} in {ElapsedMilliseconds}ms: Passwords do not match", dto.Email, stopwatch.ElapsedMilliseconds);
+            logger.LogWarning("Registration failed for in {ElapsedMilliseconds}ms: Passwords do not match", stopwatch.ElapsedMilliseconds);
             return BadRequest(new AuthResponseDto
             {
                 Success = false,
@@ -34,7 +34,7 @@ public class AuthController(
 
         if (existingUser is not null)
         {
-            logger.LogWarning("Registration failed for {Email} in {ElapsedMilliseconds}ms: Account already exists", dto.Email, stopwatch.ElapsedMilliseconds);
+            logger.LogWarning("Registration failed in {ElapsedMilliseconds}ms: Account already exists",stopwatch.ElapsedMilliseconds);
             return BadRequest(new AuthResponseDto
             {
                 Success = false,
@@ -58,7 +58,7 @@ public class AuthController(
         logger.LogInformation("CreateAsync completed in {ElapsedMilliseconds}ms", stopwatch.ElapsedMilliseconds);
         if (!createResult.Succeeded)
         {
-            logger.LogError("Registration failed for {Email} in {ElapsedMilliseconds}ms: {Errors}", dto.Email, stopwatch.ElapsedMilliseconds, FormatErrors(createResult));
+            logger.LogError("Registration failed in {ElapsedMilliseconds}ms: {Errors}", stopwatch.ElapsedMilliseconds, FormatErrors(createResult));
             return BadRequest(new AuthResponseDto
             {
                 Success = false,
@@ -69,7 +69,7 @@ public class AuthController(
         var roleAssignResult = await userManager.AddToRoleAsync(user, defaultRole);
         if (!roleAssignResult.Succeeded)
         {
-            logger.LogError("Role assignment failed for {Email} in {ElapsedMilliseconds}ms: {Errors}", dto.Email, stopwatch.ElapsedMilliseconds, FormatErrors(roleAssignResult));
+            logger.LogError("Role assignment failed in {ElapsedMilliseconds}ms: {Errors}", stopwatch.ElapsedMilliseconds, FormatErrors(roleAssignResult));
             return BadRequest(new AuthResponseDto
             {
                 Success = false,
@@ -77,7 +77,7 @@ public class AuthController(
             });
         }
 
-        logger.LogInformation("Registration successful for {Email} in {ElapsedMilliseconds}ms", dto.Email, stopwatch.ElapsedMilliseconds);
+        logger.LogInformation("Registration successful in {ElapsedMilliseconds}ms", stopwatch.ElapsedMilliseconds);
         return Ok(new AuthResponseDto
         {
             Success = true,
@@ -89,7 +89,7 @@ public class AuthController(
     public async Task<ActionResult<AuthResponseDto>> Login(LoginRequestDto dto)
     {
         var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-        logger.LogInformation("Login request started for {Email}", dto.Email);
+        logger.LogInformation("Login request started");
 
         var user = await userManager.FindByEmailAsync(dto.Email);
         logger.LogInformation("FindByEmailAsync completed in {ElapsedMilliseconds}ms", stopwatch.ElapsedMilliseconds);
