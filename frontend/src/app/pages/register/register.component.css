@@ -39,17 +39,25 @@
   z-index: 0;
 }
 
-/* Dot grid — bottom-left corner */
+/* Dot grid — halftone fade from top-left and bottom-left corners */
 .auth-dots {
   position: absolute;
-  bottom: 60px;
-  left: 55px;
-  width: 130px;
-  height: 130px;
-  background-image: radial-gradient(circle, #b8c8dc 1.6px, transparent 1.6px);
-  background-size: 11px 11px;
+  top: 0;
+  left: 0;
+  width: 45%;
+  height: 100%;
+  background-image: radial-gradient(circle, #b8c8dc 1.5px, transparent 1.5px);
+  background-size: 14px 14px;
   z-index: 0;
   pointer-events: none;
+  -webkit-mask-image:
+    radial-gradient(ellipse 90% 55% at 0% 0%, black 0%, transparent 75%),
+    radial-gradient(ellipse 90% 55% at 0% 100%, black 0%, transparent 75%);
+  -webkit-mask-composite: source-over;
+  mask-image:
+    radial-gradient(ellipse 90% 55% at 0% 0%, black 0%, transparent 75%),
+    radial-gradient(ellipse 90% 55% at 0% 100%, black 0%, transparent 75%);
+  mask-composite: add;
 }
 
 /* ===== TRANSPARENT NAVBAR ===== */
