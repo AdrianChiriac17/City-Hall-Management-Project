@@ -1,0 +1,86 @@
+<div class="upload-page">
+
+  <div class="page-header">
+    <div class="page-header-content">
+      <a routerLink="/my-documents" class="back-link">← My Documents</a>
+      <h1 class="page-title">Upload Document</h1>
+    </div>
+  </div>
+
+  <div class="upload-content">
+    <div class="upload-card">
+
+      <form [formGroup]="form" (ngSubmit)="submit()">
+
+        <!-- Title -->
+        <div class="field-wrap">
+          <label class="field-label" for="doc-title">Title <span class="required">*</span></label>
+          <input id="doc-title" type="text" formControlName="title"
+            class="field-input" placeholder="Enter a display name for this document"
+            [class.field-input--error]="form.controls.title.invalid && form.controls.title.touched"/>
+          @if (form.controls.title.hasError('required') && form.controls.title.touched) {
+            <p class="field-error">Title is required.</p>
+          } @else if (form.controls.title.hasError('maxlength') && form.controls.title.touched) {
+            <p class="field-error">Title must not exceed 200 characters.</p>
+          }
+        </div>
+
+        <!-- Description -->
+        <div class="field-wrap">
+          <label class="field-label" for="doc-desc">Description</label>
+          <textarea id="doc-desc" formControlName="description"
+            class="field-input field-textarea" placeholder="Optional description"
+            rows="3"
+            [class.field-input--error]="form.controls.description.invalid && form.controls.description.touched">
+          </textarea>
+          @if (form.controls.description.hasError('maxlength') && form.controls.description.touched) {
+            <p class="field-error">Description must not exceed 1000 characters.</p>
+          }
+        </div>
+
+        <!-- File -->
+        <div class="field-wrap">
+          <label class="field-label" for="doc-file">File <span class="required">*</span></label>
+          <label class="file-drop" for="doc-file">
+            @if (selectedFile) {
+              <div class="file-preview">
+                <span class="file-preview-icon">📄</span>
+                <div class="file-preview-info">
+                  <span class="file-preview-name">{{ selectedFile.name }}</span>
+                  <span class="file-preview-size">{{ formatFileSize(selectedFile.size) }}</span>
+                </div>
+              </div>
+            } @else {
+              <div class="file-placeholder">
+                <span class="file-placeholder-icon">📁</span>
+                <span class="file-placeholder-text">Click to select a file</span>
+                <span class="file-placeholder-hint">PDF, DOC, DOCX, PNG, JPG — max 10 MB</span>
+              </div>
+            }
+            <input id="doc-file" type="file"
+              accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+              class="file-input-hidden"
+              (change)="onFileChange($event)"/>
+          </label>
+          @if (fileError) {
+            <p class="field-error">{{ fileError }}</p>
+          }
+        </div>
+
+        @if (submitError) {
+          <p class="submit-error">{{ submitError }}</p>
+        }
+
+        <!-- Actions -->
+        <div class="form-actions">
+          <a routerLink="/my-documents" class="cancel-btn">Cancel</a>
+          <button type="submit" class="submit-btn" [disabled]="isSubmitting">
+            {{ isSubmitting ? 'Uploading…' : 'Upload Document' }}
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,62 @@
+<div class="approval-page">
+
+  <div class="page-header">
+    <div class="page-header-content">
+      <h1 class="page-title">Document Approval</h1>
+      <p class="page-subtitle">Review and approve or reject documents submitted by users.</p>
+    </div>
+  </div>
+
+  <div class="approval-content">
+
+    @if (isLoading) {
+      <div class="doc-table">
+        <div class="table-header">
+          <span class="col-owner">Owner</span>
+          <span class="col-title">Title</span>
+          <span class="col-date">Uploaded</span>
+          <span class="col-action"></span>
+        </div>
+        @for (i of [1,2,3,4]; track i) {
+          <div class="doc-row doc-row--skeleton"></div>
+        }
+      </div>
+
+    } @else if (error) {
+      <div class="empty-state">
+        <p class="error-text">{{ error }}</p>
+      </div>
+
+    } @else if (documents.length === 0) {
+      <div class="empty-state">
+        <div class="empty-icon" aria-hidden="true">✅</div>
+        <h2 class="empty-title">All caught up</h2>
+        <p class="empty-subtitle">No documents are awaiting review.</p>
+      </div>
+
+    } @else {
+      <div class="doc-table">
+        <div class="table-header">
+          <span class="col-owner">Owner</span>
+          <span class="col-title">Title</span>
+          <span class="col-date">Uploaded</span>
+          <span class="col-action"></span>
+        </div>
+
+        @for (doc of documents; track doc.id) {
+          <div class="doc-row">
+            <span class="col-owner owner-name">{{ doc.ownerName }}</span>
+            <span class="col-title doc-title">{{ doc.title }}</span>
+            <span class="col-date doc-date">{{ doc.uploadedAt | date:'MMM d, yyyy' }}</span>
+            <div class="col-action">
+              <button type="button" class="review-btn" (click)="reviewDocument(doc.id)">
+                Review
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+  </div>
+</div>

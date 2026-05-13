@@ -1,0 +1,64 @@
+<div class="docs-page">
+
+  <!-- Page header -->
+  <div class="page-header">
+    <div class="page-header-content">
+      <div class="page-header-text">
+        <h1 class="page-title">My Documents</h1>
+        <p class="page-subtitle">Upload, track, and manage your submitted documents.</p>
+      </div>
+      <a routerLink="/my-documents/create" class="upload-btn">+ Upload Document</a>
+    </div>
+  </div>
+
+  <!-- Document list -->
+  <div class="docs-content">
+
+    @if (isLoading) {
+      <div class="doc-list">
+        @for (i of [1,2,3]; track i) {
+          <div class="doc-card doc-card--skeleton"></div>
+        }
+      </div>
+
+    } @else if (error) {
+      <div class="empty-state">
+        <p class="error-text">{{ error }}</p>
+      </div>
+
+    } @else if (documents.length === 0) {
+      <div class="empty-state">
+        <div class="empty-icon" aria-hidden="true">📄</div>
+        <h2 class="empty-title">No documents yet</h2>
+        <p class="empty-subtitle">Upload your first document to get started.</p>
+        <a routerLink="/my-documents/create" class="upload-btn">+ Upload Document</a>
+      </div>
+
+    } @else {
+      <div class="doc-list">
+        @for (doc of documents; track doc.id) {
+          <div class="doc-card" (click)="openDocument(doc.id)" role="button" tabindex="0"
+            (keydown.enter)="openDocument(doc.id)">
+            <div class="doc-main">
+              <div class="doc-icon" aria-hidden="true">📄</div>
+              <div class="doc-body">
+                <h2 class="doc-title">{{ doc.title }}</h2>
+                <p class="doc-meta">
+                  {{ doc.originalFileName }}
+                  &nbsp;·&nbsp;
+                  {{ formatFileSize(doc.fileSizeBytes) }}
+                  &nbsp;·&nbsp;
+                  {{ doc.uploadedAt | date:'MMM d, yyyy' }}
+                </p>
+              </div>
+            </div>
+            <span class="status-badge status-badge--{{ doc.approvalStatus.toLowerCase() }}">
+              {{ doc.approvalStatus }}
+            </span>
+          </div>
+        }
+      </div>
+    }
+
+  </div>
+</div>
