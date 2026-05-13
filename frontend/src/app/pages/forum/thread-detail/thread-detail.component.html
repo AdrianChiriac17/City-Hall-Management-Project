@@ -1,0 +1,187 @@
+<div class="detail-page">
+
+  @if (isLoading) {
+    <div class="page-header page-header--skeleton">
+      <div class="page-header-content">
+        <div class="skeleton skeleton-back"></div>
+        <div class="skeleton skeleton-title"></div>
+      </div>
+    </div>
+    <div class="detail-content">
+      <div class="thread-card thread-card--skeleton"></div>
+      @for (i of [1,2]; track i) {
+        <div class="post-card post-card--skeleton"></div>
+      }
+    </div>
+
+  } @else if (error) {
+    <div class="page-header">
+      <div class="page-header-content">
+        <a routerLink="/forum" class="back-link">← Back to Forum</a>
+      </div>
+    </div>
+    <div class="detail-content">
+      <div class="error-state">
+        <p class="error-text">{{ error }}</p>
+        <button class="retry-btn" (click)="retry()">Try again</button>
+      </div>
+    </div>
+
+  } @else if (thread) {
+    <!-- Header -->
+    <div class="page-header">
+      <div class="page-header-content">
+        <a routerLink="/forum" class="back-link">← Back to Forum</a>
+        <div class="header-title-wrap">
+          <h1 class="page-title">{{ thread.title }}</h1>
+          @if (thread.isClosed) {
+            <span class="closed-badge">Closed</span>
+          }
+        </div>
+        @if (isModerator) {
+          <div class="mod-actions">
+            <button type="button" class="mod-btn mod-btn--close" (click)="toggleClose()">
+              {{ thread.isClosed ? 'Reopen' : 'Close' }}
+            </button>
+            <button type="button" class="mod-btn mod-btn--delete" (click)="deleteThread()">
+              Delete Thread
+            </button>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="detail-content">
+
+      <!-- Thread body -->
+      <div class="thread-card">
+        <div class="post-header">
+          <div class="avatar" aria-hidden="true">{{ initials(thread.authorName) }}</div>
+          <div class="post-meta">
+            <span class="post-author">{{ thread.authorName }}</span>
+            <span class="post-date">{{ thread.createdAt | date:'MMM d, yyyy · h:mm a' }}</span>
+          </div>
+        </div>
+        <div class="post-content">{{ thread.content }}</div>
+
+        @if (thread.attachments.length > 0) {
+          <div class="attachment-grid">
+            @for (att of thread.attachments; track att.id) {
+              <a [href]="att.url" target="_blank" rel="noopener noreferrer" class="attachment-link">
+                <img [src]="att.url" [alt]="att.originalFileName" class="attachment-img" loading="lazy"/>
+              </a>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Replies -->
+      @if (thread.posts.length > 0) {
+        <h2 class="replies-heading">
+          {{ thread.posts.length }} {{ thread.posts.length === 1 ? 'Reply' : 'Replies' }}
+        </h2>
+
+        <div class="post-list">
+          @for (post of thread.posts; track post.id) {
+            <div class="post-card">
+              <div class="post-header">
+                <div class="avatar" aria-hidden="true">{{ initials(post.authorName) }}</div>
+                <div class="post-meta">
+                  <span class="post-author">{{ post.authorName }}</span>
+                  <span class="post-date">{{ post.createdAt | date:'MMM d, yyyy · h:mm a' }}</span>
+                </div>
+                @if (isModerator) {
+                  <button type="button" class="post-delete-btn" (click)="deletePost(post.id)"
+                    aria-label="Delete reply">Delete</button>
+                }
+              </div>
+              <div class="post-content">{{ post.content }}</div>
+
+              @if (post.attachments.length > 0) {
+                <div class="attachment-grid">
+                  @for (att of post.attachments; track att.id) {
+                    <a [href]="att.url" target="_blank" rel="noopener noreferrer" class="attachment-link">
+                      <img [src]="att.url" [alt]="att.originalFileName" class="attachment-img" loading="lazy"/>
+                    </a>
+                  }
+                </div>
+              }
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="no-replies">
+          <p class="no-replies-text">No replies yet. Be the first to respond.</p>
+        </div>
+      }
+
+      <!-- Reply form -->
+      @if (!thread.isClosed) {
+        <div class="reply-card">
+          <h2 class="reply-heading">Post a Reply</h2>
+
+          <form [formGroup]="replyForm" (ngSubmit)="submitReply()">
+
+            <div class="field-wrap">
+              <textarea formControlName="content" class="content-textarea"
+                placeholder="Write your reply…" maxlength="10000" rows="6"></textarea>
+              <span class="char-hint">{{ charCount }} / 10000</span>
+            </div>
+
+            <!-- Image attachments -->
+            <div class="upload-section">
+              <div class="upload-row">
+                <input type="file" id="reply-files" accept="image/jpeg,image/png,image/gif,image/webp"
+                  multiple hidden (change)="onFilesSelected($event)" #replyFileInput>
+                <button type="button" class="upload-trigger" (click)="replyFileInput.click()">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="17 8 12 3 7 8"/>
+                    <line x1="12" y1="3" x2="12" y2="15"/>
+                  </svg>
+                  Attach Images
+                </button>
+                <span class="upload-hint">JPEG · PNG · GIF · WebP · max 5 MB each</span>
+              </div>
+
+              @if (fileError) {
+                <p class="file-error">{{ fileError }}</p>
+              }
+
+              @if (selectedFiles.length > 0) {
+                <div class="file-list">
+                  @for (f of selectedFiles; track f.name; let i = $index) {
+                    <div class="file-item">
+                      <span class="file-name">{{ f.name }}</span>
+                      <span class="file-size">{{ formatFileSize(f.size) }}</span>
+                      <button type="button" class="file-remove" (click)="removeFile(i)"
+                        aria-label="Remove file">×</button>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+
+            @if (replyMessage) {
+              <p class="form-message" [class.success]="replyIsSuccess">{{ replyMessage }}</p>
+            }
+
+            <div class="form-actions">
+              <button type="submit" class="submit-btn" [disabled]="isSubmitting">
+                {{ isSubmitting ? 'Posting…' : 'Post Reply' }}
+              </button>
+            </div>
+
+          </form>
+        </div>
+      } @else {
+        <div class="closed-notice">
+          <span class="closed-icon" aria-hidden="true">🔒</span>
+          <p class="closed-text">This thread is closed. No new replies can be posted.</p>
+        </div>
+      }
+
+    </div>
+  }
+
+</div>

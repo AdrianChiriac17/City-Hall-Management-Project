@@ -1,0 +1,260 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
+
+.admin-page {
+  min-height: 100vh;
+  background: #f5f7fa;
+}
+
+/* ===== PAGE HEADER ===== */
+.page-header {
+  background: linear-gradient(135deg, #0f2035 0%, #1b3a5c 100%);
+  padding: 2.2rem 2rem;
+}
+
+.page-header-content {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.page-title {
+  font-family: 'Manrope', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 0.3rem;
+}
+
+.page-subtitle {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.88rem;
+  color: #7a9dc0;
+  margin: 0;
+}
+
+/* ===== CONTENT ===== */
+.admin-content {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+/* ===== TABLE ===== */
+.user-table {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 2px 14px rgba(30, 50, 80, 0.07);
+  overflow: hidden;
+}
+
+.table-header {
+  display: grid;
+  grid-template-columns: 220px 1fr 160px 180px 120px;
+  gap: 1rem;
+  padding: 0.8rem 1.4rem;
+  background: #f0f4fa;
+  border-bottom: 1px solid #dce4ee;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #8a9bb0;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.user-row {
+  display: grid;
+  grid-template-columns: 220px 1fr 160px 180px 120px;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.9rem 1.4rem;
+  border-bottom: 1px solid #f0f4fa;
+  transition: background 0.15s;
+}
+
+.user-row:last-child {
+  border-bottom: none;
+}
+
+.user-row:hover {
+  background: #fafbfc;
+}
+
+.user-row--skeleton {
+  height: 64px;
+  grid-template-columns: 1fr;
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+  border-bottom: 1px solid #f0f4fa;
+}
+
+/* ===== USER IDENTITY ===== */
+.user-identity {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3a7abf, #1b3a5c);
+  color: #fff;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.user-name-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.05rem;
+  min-width: 0;
+}
+
+.user-name {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #1a2a3a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-since {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.73rem;
+  color: #aab5c5;
+}
+
+/* ===== EMAIL ===== */
+.user-email {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.84rem;
+  color: #4a6070;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ===== ROLE BADGE ===== */
+.role-badge {
+  display: inline-block;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #fff;
+  border-radius: 999px;
+  padding: 0.2rem 0.65rem;
+}
+
+.no-role {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.8rem;
+  color: #aab5c5;
+  font-style: italic;
+}
+
+/* ===== ROLE SELECT ===== */
+.role-select {
+  width: 100%;
+  padding: 0.45rem 0.7rem;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.84rem;
+  color: #1a2a3a;
+  background: #f9fafb;
+  border: 1.5px solid #dce4ee;
+  border-radius: 8px;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.18s;
+}
+
+.role-select:focus {
+  border-color: #3a7abf;
+}
+
+/* ===== SAVE BUTTON ===== */
+.col-save {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.save-btn {
+  background: linear-gradient(90deg, #00c6a2, #00a688);
+  color: #fff;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 999px;
+  padding: 0.45rem 1.1rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.2s;
+}
+
+.save-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.save-btn:hover:not(:disabled) {
+  opacity: 0.88;
+}
+
+.save-msg {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #1a7a4a;
+  white-space: nowrap;
+}
+
+.save-msg.error {
+  color: #c0392b;
+}
+
+/* ===== ERROR STATE ===== */
+.error-state {
+  text-align: center;
+  padding: 3rem 1rem;
+}
+
+.error-text {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.92rem;
+  color: #c0392b;
+  margin: 0;
+}
+
+/* ===== SKELETON ===== */
+@keyframes skeleton-pulse {
+  0%, 100% { background: #f0f2f5; }
+  50% { background: #e8ecf2; }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 860px) {
+  .table-header { display: none; }
+
+  .user-row {
+    grid-template-columns: 1fr;
+    gap: 0.6rem;
+    padding: 1rem;
+  }
+
+  .user-email {
+    font-size: 0.8rem;
+    color: #8a9bb0;
+  }
+
+  .col-save {
+    justify-content: flex-start;
+  }
+}

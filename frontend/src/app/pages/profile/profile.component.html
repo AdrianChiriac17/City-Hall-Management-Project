@@ -1,0 +1,176 @@
+<div class="profile-page">
+
+  <!-- Hero banner -->
+  @if (isLoading) {
+    <div class="profile-hero profile-hero--skeleton"></div>
+  } @else if (profile) {
+    <div class="profile-hero">
+      <div class="hero-content">
+        <div class="avatar" aria-hidden="true">{{ initials }}</div>
+        <div class="hero-info">
+          <h1 class="hero-name">{{ profile.firstName }} {{ profile.lastName }}</h1>
+          <div class="role-badges">
+            @for (role of profile.roles; track role) {
+              <span class="role-badge">{{ role }}</span>
+            }
+          </div>
+          <p class="hero-email">{{ profile.email }}</p>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Page content -->
+  <div class="profile-content">
+
+    @if (loadError) {
+      <p class="load-error">{{ loadError }}</p>
+
+    } @else if (isLoading) {
+      <div class="profile-grid">
+        <div class="profile-card profile-card--skeleton"></div>
+        <div class="profile-card profile-card--skeleton"></div>
+      </div>
+
+    } @else if (profile) {
+      <div class="profile-grid">
+
+        <!-- ── Account information (read-only) ── -->
+        <div class="profile-card">
+          <h2 class="card-title">Account Information</h2>
+          <div class="info-list">
+
+            <div class="info-item">
+              <span class="info-label">Full Name</span>
+              <span class="info-value">{{ profile.firstName }} {{ profile.lastName }}</span>
+            </div>
+
+            <div class="info-item">
+              <span class="info-label">Email</span>
+              <span class="info-value">{{ profile.email }}</span>
+            </div>
+
+            <div class="info-item">
+              <span class="info-label">Role</span>
+              <div class="info-roles">
+                @for (role of profile.roles; track role) {
+                  <span class="role-pill">{{ role }}</span>
+                }
+              </div>
+            </div>
+
+            <div class="info-item">
+              <span class="info-label">Member Since</span>
+              <span class="info-value">
+                @if (hasValidCreatedAt()) {
+                  {{ profile.createdAt | date:'MMMM d, yyyy' }}
+                } @else {
+                  —
+                }
+              </span>
+            </div>
+
+            <div class="info-divider"></div>
+
+            <div class="info-item">
+              <span class="info-label">Phone</span>
+              <span class="info-value">
+                @if (profile.phoneNumber) {
+                  {{ profile.phoneCountryCode }} {{ profile.phoneNumber }}
+                } @else {
+                  Not set
+                }
+              </span>
+            </div>
+
+            <div class="info-item">
+              <span class="info-label">Address</span>
+              <span class="info-value">
+                @if (profile.street) {
+                  {{ profile.street }}, {{ profile.city }} {{ profile.postalCode }}, {{ profile.country }}
+                } @else {
+                  Not set
+                }
+              </span>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ── Edit contact details ── -->
+        <div class="profile-card">
+          <h2 class="card-title">Edit Contact Details</h2>
+          <form class="edit-form" [formGroup]="editForm" (ngSubmit)="save()">
+
+            <!-- Phone -->
+            <div class="field-wrap">
+              <label class="field-label" for="prof-phone">Phone Number</label>
+              <div class="field-row phone-field-row">
+                <select formControlName="phoneCountryCode" class="phone-code-select"
+                  aria-label="Country dialling code">
+                  @for (code of countryCodes; track code.dial + code.name) {
+                    <option [value]="code.dial">{{ code.dial }} — {{ code.name }}</option>
+                  }
+                </select>
+                <span class="phone-sep" aria-hidden="true">|</span>
+                <input id="prof-phone" type="tel" formControlName="phoneNumber"
+                  class="field-input" placeholder="712 345 678"/>
+              </div>
+            </div>
+
+            <!-- Address section -->
+            <p class="section-label">Address</p>
+
+            <div class="field-wrap">
+              <label class="field-label" for="prof-street">Street</label>
+              <div class="field-row">
+                <input id="prof-street" type="text" formControlName="street"
+                  class="field-input" placeholder="Strada Republicii nr. 1"/>
+              </div>
+            </div>
+
+            <div class="two-col">
+              <div class="field-wrap">
+                <label class="field-label" for="prof-city">City</label>
+                <div class="field-row">
+                  <input id="prof-city" type="text" formControlName="city"
+                    class="field-input" placeholder="Cluj-Napoca"/>
+                </div>
+              </div>
+              <div class="field-wrap">
+                <label class="field-label" for="prof-postal">Postal Code</label>
+                <div class="field-row">
+                  <input id="prof-postal" type="text" formControlName="postalCode"
+                    class="field-input" placeholder="400001"/>
+                </div>
+              </div>
+            </div>
+
+            <div class="field-wrap">
+              <label class="field-label" for="prof-country">Country</label>
+              <div class="field-row">
+                <select id="prof-country" formControlName="country"
+                  class="field-input field-select" aria-label="Country">
+                  @for (c of countries; track c) {
+                    <option [value]="c">{{ c }}</option>
+                  }
+                </select>
+              </div>
+            </div>
+
+            @if (saveMessage) {
+              <p class="form-message" [class.success]="isSaveSuccess">{{ saveMessage }}</p>
+            }
+
+            <button type="submit" class="save-btn" [disabled]="isSaving">
+              {{ isSaving ? 'Saving…' : 'Save Changes' }}
+            </button>
+
+          </form>
+        </div>
+
+      </div>
+    }
+  </div>
+
+</div>

@@ -1,24 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace City_Hall_Management_Project.DTOs.Auth;
+namespace City_Hall_Management_Project.DTOs.Profile;
 
-public class RegisterRequestDto
+public class UpdateProfileDto
 {
-    [Required, StringLength(80)]
-    public string FirstName { get; set; } = string.Empty;
-
-    [Required, StringLength(80)]
-    public string LastName { get; set; } = string.Empty;
-
-    [Required, EmailAddress]
-    public string Email { get; set; } = string.Empty;
-
-    [Required, MinLength(8)]
-    public string Password { get; set; } = string.Empty;
-
-    [Required]
-    public string ConfirmPassword { get; set; } = string.Empty;
-
     [Required, RegularExpression(@"^\+\d{1,4}$", ErrorMessage = "Invalid country dialling code.")]
     public string PhoneCountryCode { get; set; } = string.Empty;
 

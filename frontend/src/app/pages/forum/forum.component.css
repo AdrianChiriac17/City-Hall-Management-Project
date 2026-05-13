@@ -1,0 +1,319 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
+
+.forum-page {
+  min-height: 100vh;
+  background: #f5f7fa;
+}
+
+/* ===== PAGE HEADER ===== */
+.page-header {
+  background: linear-gradient(135deg, #0f2035 0%, #1b3a5c 100%);
+  padding: 2.2rem 2rem;
+}
+
+.page-header-content {
+  max-width: 860px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.page-title {
+  font-family: 'Manrope', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 0.3rem;
+}
+
+.page-subtitle {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.88rem;
+  color: #7a9dc0;
+  margin: 0;
+}
+
+.new-thread-btn {
+  flex-shrink: 0;
+  background: linear-gradient(90deg, #00c6a2, #00a688);
+  color: #fff;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 999px;
+  padding: 0.65rem 1.4rem;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  transition: opacity 0.2s, transform 0.18s;
+}
+
+.new-thread-btn:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+
+/* ===== CONTENT AREA ===== */
+.forum-content {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+/* ===== THREAD LIST ===== */
+.thread-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.thread-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.1rem 1.4rem;
+  box-shadow: 0 2px 12px rgba(30, 50, 80, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  cursor: pointer;
+  transition: box-shadow 0.18s, transform 0.18s;
+  border: 1px solid transparent;
+}
+
+.thread-card:hover {
+  box-shadow: 0 6px 24px rgba(30, 50, 80, 0.12);
+  transform: translateY(-1px);
+  border-color: #e0e8f0;
+}
+
+.thread-card--skeleton {
+  height: 74px;
+  cursor: default;
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+.thread-card--skeleton:hover {
+  transform: none;
+  box-shadow: 0 2px 12px rgba(30, 50, 80, 0.06);
+  border-color: transparent;
+}
+
+.thread-main {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.thread-status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #00c6a2;
+  flex-shrink: 0;
+}
+
+.thread-status-dot--closed {
+  background: #aab5c5;
+}
+
+.thread-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.thread-title {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.96rem;
+  font-weight: 700;
+  color: #1a2a3a;
+  margin: 0 0 0.2rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.thread-meta {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.8rem;
+  color: #8a9bb0;
+  margin: 0;
+}
+
+.thread-author {
+  color: #3a7abf;
+  font-weight: 600;
+}
+
+.closed-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #8a9bb0;
+  background: #edf0f5;
+  border-radius: 4px;
+  padding: 0.1rem 0.4rem;
+}
+
+.thread-replies {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  min-width: 52px;
+}
+
+.reply-count {
+  font-family: 'Manrope', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #1a2a3a;
+  line-height: 1;
+}
+
+.reply-label {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.7rem;
+  color: #8a9bb0;
+  font-weight: 600;
+}
+
+/* ===== MODERATOR DELETE BUTTON (thread card) ===== */
+.thread-delete-btn {
+  background: none;
+  border: 1px solid #f5c2bc;
+  border-radius: 6px;
+  padding: 0.28rem 0.7rem;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #c0392b;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+
+.thread-delete-btn:hover {
+  background: #fdf0ee;
+}
+
+/* ===== EMPTY / ERROR STATE ===== */
+.empty-state {
+  text-align: center;
+  padding: 4rem 1rem;
+}
+
+.empty-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.empty-title {
+  font-family: 'Manrope', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1a2a3a;
+  margin: 0 0 0.5rem;
+}
+
+.empty-subtitle {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.9rem;
+  color: #8a9bb0;
+  margin: 0 0 1.5rem;
+}
+
+.error-text {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.92rem;
+  color: #c0392b;
+  margin: 0 0 1rem;
+}
+
+.retry-btn {
+  background: #f0f2f5;
+  border: none;
+  border-radius: 999px;
+  padding: 0.6rem 1.4rem;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #1a2a3a;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.retry-btn:hover {
+  background: #e0e8f0;
+}
+
+/* ===== PAGINATION ===== */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.page-btn {
+  background: #fff;
+  border: 1px solid #e0e8f0;
+  border-radius: 999px;
+  padding: 0.5rem 1.2rem;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #1a2a3a;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.page-btn:hover:not(:disabled) {
+  background: #f0f2f5;
+  border-color: #c0ccd8;
+}
+
+.page-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.page-info {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.85rem;
+  color: #8a9bb0;
+  font-weight: 500;
+}
+
+/* ===== SKELETON ===== */
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 1; background: #f0f2f5; }
+  50% { opacity: 0.5; background: #e8ecf2; }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 600px) {
+  .page-header-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .forum-content {
+    padding: 1.2rem 1rem 3rem;
+  }
+
+  .thread-card {
+    padding: 0.9rem 1rem;
+  }
+
+  .thread-title {
+    white-space: normal;
+  }
+}

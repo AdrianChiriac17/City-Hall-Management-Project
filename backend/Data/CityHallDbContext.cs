@@ -17,6 +17,9 @@ public class CityHallDbContext(DbContextOptions<CityHallDbContext> options) : Id
     public DbSet<Document> Documents => Set<Document>();
     public DbSet<RequestDocument> RequestDocuments => Set<RequestDocument>();
     public DbSet<RequestAssignment> RequestAssignments => Set<RequestAssignment>();
+    public DbSet<ForumThread> ForumThreads => Set<ForumThread>();
+    public DbSet<ForumPost> ForumPosts => Set<ForumPost>();
+    public DbSet<ForumAttachment> ForumAttachments => Set<ForumAttachment>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -78,5 +81,38 @@ public class CityHallDbContext(DbContextOptions<CityHallDbContext> options) : Id
             .WithMany(u => u.RequestHistoryEntries)
             .HasForeignKey(h => h.ChangedByUserId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        // Forum
+        modelBuilder.Entity<ForumThread>()
+            .HasOne(t => t.Author)
+            .WithMany(u => u.ForumThreads)
+            .HasForeignKey(t => t.AuthorUserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<ForumPost>()
+            .HasOne(p => p.Thread)
+            .WithMany(t => t.Posts)
+            .HasForeignKey(p => p.ThreadId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<ForumPost>()
+            .HasOne(p => p.Author)
+            .WithMany(u => u.ForumPosts)
+            .HasForeignKey(p => p.AuthorUserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<ForumAttachment>()
+            .HasOne(a => a.Thread)
+            .WithMany(t => t.Attachments)
+            .HasForeignKey(a => a.ThreadId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<ForumAttachment>()
+            .HasOne(a => a.Post)
+            .WithMany(p => p.Attachments)
+            .HasForeignKey(a => a.PostId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

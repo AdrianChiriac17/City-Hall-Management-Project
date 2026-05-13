@@ -18,6 +18,10 @@ export class NavbarComponent {
 
   readonly currentUser = toSignal(this.authService.currentUser$, { initialValue: null });
 
+  get isAdmin(): boolean {
+    return this.currentUser()?.roles?.includes('System Administrator') ?? false;
+  }
+
   constructor() {
     afterNextRender(() => {
       this.authService.loadCurrentUser().subscribe({

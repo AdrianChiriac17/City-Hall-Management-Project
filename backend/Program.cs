@@ -79,12 +79,19 @@ using (var scope = app.Services.CreateScope())
     await SeedData.InitializeAsync(dbContext, roleManager, userManager);
 }
 
+// Ensure the forum upload directory exists
+var forumUploadsDir = Path.Combine(
+    app.Environment.WebRootPath ?? Path.Combine(app.Environment.ContentRootPath, "wwwroot"),
+    "uploads", "forum");
+Directory.CreateDirectory(forumUploadsDir);
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
 
+app.UseStaticFiles();
 app.UseHttpsRedirection();
 
 app.UseCors("Frontend");

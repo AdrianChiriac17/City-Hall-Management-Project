@@ -45,6 +45,15 @@
         (click)="closeMenu()"
       >Profile</a>
 
+      @if (isAdmin) {
+        <a
+          routerLink="/admin"
+          routerLinkActive="active"
+          (click)="closeMenu()"
+          class="admin-link"
+        >Admin</a>
+      }
+
       <button
         type="button"
         class="logout-btn"

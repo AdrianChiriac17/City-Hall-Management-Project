@@ -4,6 +4,7 @@ using City_Hall_Management_Project.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace City_Hall_Management_Project.Migrations
 {
     [DbContext(typeof(CityHallDbContext))]
-    partial class CityHallDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260513130015_RefactorCitizenProfileAddress")]
+    partial class RefactorCitizenProfileAddress
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -162,113 +165,6 @@ namespace City_Hall_Management_Project.Migrations
                         .IsUnique();
 
                     b.ToTable("EmployeeProfiles");
-                });
-
-            modelBuilder.Entity("City_Hall_Management_Project.Models.ForumAttachment", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("ContentType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("FileSizeBytes")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("OriginalFileName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid?>("PostId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("StoragePath")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StoredFileName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid?>("ThreadId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("UploadedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PostId");
-
-                    b.HasIndex("ThreadId");
-
-                    b.ToTable("ForumAttachments");
-                });
-
-            modelBuilder.Entity("City_Hall_Management_Project.Models.ForumPost", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("AuthorUserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("ThreadId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AuthorUserId");
-
-                    b.HasIndex("ThreadId");
-
-                    b.ToTable("ForumPosts");
-                });
-
-            modelBuilder.Entity("City_Hall_Management_Project.Models.ForumThread", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("AuthorUserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsClosed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AuthorUserId");
-
-                    b.ToTable("ForumThreads");
                 });
 
             modelBuilder.Entity("City_Hall_Management_Project.Models.Request", b =>
@@ -653,53 +549,6 @@ namespace City_Hall_Management_Project.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("City_Hall_Management_Project.Models.ForumAttachment", b =>
-                {
-                    b.HasOne("City_Hall_Management_Project.Models.ForumPost", "Post")
-                        .WithMany("Attachments")
-                        .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("City_Hall_Management_Project.Models.ForumThread", "Thread")
-                        .WithMany("Attachments")
-                        .HasForeignKey("ThreadId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("Post");
-
-                    b.Navigation("Thread");
-                });
-
-            modelBuilder.Entity("City_Hall_Management_Project.Models.ForumPost", b =>
-                {
-                    b.HasOne("City_Hall_Management_Project.Models.User", "Author")
-                        .WithMany("ForumPosts")
-                        .HasForeignKey("AuthorUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("City_Hall_Management_Project.Models.ForumThread", "Thread")
-                        .WithMany("Posts")
-                        .HasForeignKey("ThreadId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Author");
-
-                    b.Navigation("Thread");
-                });
-
-            modelBuilder.Entity("City_Hall_Management_Project.Models.ForumThread", b =>
-                {
-                    b.HasOne("City_Hall_Management_Project.Models.User", "Author")
-                        .WithMany("ForumThreads")
-                        .HasForeignKey("AuthorUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Author");
-                });
-
             modelBuilder.Entity("City_Hall_Management_Project.Models.Request", b =>
                 {
                     b.HasOne("City_Hall_Management_Project.Models.CitizenProfile", "CitizenProfile")
@@ -849,18 +698,6 @@ namespace City_Hall_Management_Project.Migrations
                     b.Navigation("DepartmentRoles");
                 });
 
-            modelBuilder.Entity("City_Hall_Management_Project.Models.ForumPost", b =>
-                {
-                    b.Navigation("Attachments");
-                });
-
-            modelBuilder.Entity("City_Hall_Management_Project.Models.ForumThread", b =>
-                {
-                    b.Navigation("Attachments");
-
-                    b.Navigation("Posts");
-                });
-
             modelBuilder.Entity("City_Hall_Management_Project.Models.Request", b =>
                 {
                     b.Navigation("Assignments");
@@ -875,10 +712,6 @@ namespace City_Hall_Management_Project.Migrations
                     b.Navigation("CitizenProfile");
 
                     b.Navigation("EmployeeProfile");
-
-                    b.Navigation("ForumPosts");
-
-                    b.Navigation("ForumThreads");
 
                     b.Navigation("RequestHistoryEntries");
                 });

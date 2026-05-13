@@ -1,27 +1,27 @@
-import { Component, inject, ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { DatePipe } from '@angular/common';
 import { finalize } from 'rxjs';
-import { AuthService } from '../../services/auth.service';
+import { ProfileService, UserProfile } from '../../services/profile.service';
 
 @Component({
-  selector: 'app-register',
+  selector: 'app-profile',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink],
-  templateUrl: './register.component.html',
-  styleUrls: ['./register.component.css']
+  imports: [ReactiveFormsModule, DatePipe],
+  templateUrl: './profile.component.html',
+  styleUrls: ['./profile.component.css']
 })
-export class RegisterComponent {
-  private readonly formBuilder = inject(FormBuilder);
-  private readonly authService = inject(AuthService);
-  private readonly router = inject(Router);
+export class ProfileComponent implements OnInit {
+  private readonly fb = inject(FormBuilder);
+  private readonly profileService = inject(ProfileService);
   private readonly cdr = inject(ChangeDetectorRef);
 
-  showPassword = false;
-  showConfirmPassword = false;
-  isSubmitting = false;
-  message = '';
-  isSuccess = false;
+  profile: UserProfile | null = null;
+  isLoading = true;
+  isSaving = false;
+  saveMessage = '';
+  isSaveSuccess = false;
+  loadError = '';
 
   readonly countryCodes = [
     { dial: '+40', name: 'Romania' },
@@ -121,109 +121,98 @@ export class RegisterComponent {
     'Vatican City', 'Venezuela', 'Vietnam',
   ];
 
-  registerForm = this.formBuilder.group({
-    firstName: ['', [Validators.required, Validators.maxLength(80)]],
-    lastName: ['', [Validators.required, Validators.maxLength(80)]],
-    email: ['', [Validators.required, Validators.email]],
+  editForm = this.fb.group({
     phoneCountryCode: ['+40', [Validators.required]],
     phoneNumber: ['', [Validators.required, Validators.pattern(/^[\d\s\-\(\)]{4,20}$/)]],
     street: ['', [Validators.required, Validators.maxLength(200)]],
     city: ['', [Validators.required, Validators.maxLength(100)]],
     postalCode: ['', [Validators.required, Validators.maxLength(20)]],
-    country: ['Romania', [Validators.required]],
-    password: ['', [
-      Validators.required,
-      Validators.minLength(8),
-      Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/)
-    ]],
-    confirmPassword: ['', [Validators.required]]
+    country: ['Romania', [Validators.required]]
   });
 
-  togglePasswordVisibility(): void {
-    this.showPassword = !this.showPassword;
-  }
-
-  toggleConfirmPasswordVisibility(): void {
-    this.showConfirmPassword = !this.showConfirmPassword;
-  }
-
-  submit(): void {
-    this.message = '';
-    this.isSuccess = false;
-
-    if (this.registerForm.invalid) {
-      this.registerForm.markAllAsTouched();
-      this.message = this.getValidationMessage();
-      return;
-    }
-
-    const formValue = this.registerForm.getRawValue();
-    if (formValue.password !== formValue.confirmPassword) {
-      this.message = 'Password and confirm password do not match.';
-      return;
-    }
-
-    this.isSubmitting = true;
-    this.authService.register({
-      firstName: formValue.firstName ?? '',
-      lastName: formValue.lastName ?? '',
-      email: formValue.email ?? '',
-      password: formValue.password ?? '',
-      confirmPassword: formValue.confirmPassword ?? '',
-      phoneCountryCode: formValue.phoneCountryCode ?? '',
-      phoneNumber: formValue.phoneNumber ?? '',
-      street: formValue.street ?? '',
-      city: formValue.city ?? '',
-      postalCode: formValue.postalCode ?? '',
-      country: formValue.country ?? ''
-    }).pipe(
+  ngOnInit(): void {
+    this.profileService.getProfile().pipe(
       finalize(() => {
-        this.isSubmitting = false;
+        this.isLoading = false;
         this.cdr.detectChanges();
       })
     ).subscribe({
-      next: response => {
-        this.isSuccess = response.success;
-        this.message = response.message || 'Account created successfully.';
-        this.registerForm.reset({ phoneCountryCode: '+40', country: 'Romania' });
-        setTimeout(() => this.router.navigate(['/login']), 700);
+      next: profile => {
+        this.profile = profile;
+        this.editForm.patchValue({
+          phoneCountryCode: profile.phoneCountryCode || '+40',
+          phoneNumber: profile.phoneNumber,
+          street: profile.street,
+          city: profile.city,
+          postalCode: profile.postalCode,
+          country: profile.country || 'Romania'
+        });
         this.cdr.detectChanges();
       },
-      error: error => {
-        this.message = error.error?.message || 'Registration failed. Please try again.';
-        this.isSuccess = false;
+      error: () => {
+        this.loadError = 'Failed to load profile. Please refresh the page.';
         this.cdr.detectChanges();
       }
     });
   }
 
-  private getValidationMessage(): string {
-    const c = this.registerForm.controls;
+  get initials(): string {
+    if (!this.profile) return '?';
+    return `${this.profile.firstName.charAt(0)}${this.profile.lastName.charAt(0)}`.toUpperCase();
+  }
 
-    if (c.firstName.invalid || c.lastName.invalid) {
-      return 'Please enter your first and last name.';
+  hasValidCreatedAt(): boolean {
+    if (!this.profile) return false;
+    return new Date(this.profile.createdAt).getFullYear() > 2000;
+  }
+
+  save(): void {
+    this.saveMessage = '';
+    this.isSaveSuccess = false;
+
+    if (this.editForm.invalid) {
+      this.editForm.markAllAsTouched();
+      this.saveMessage = 'Please fix the errors before saving.';
+      return;
     }
-    if (c.email.invalid) {
-      return 'Please enter a valid email address.';
-    }
-    if (c.phoneCountryCode.invalid || c.phoneNumber.invalid) {
-      return 'Please enter a valid phone number (digits, spaces, dashes and parentheses only, 4–20 characters).';
-    }
-    if (c.street.invalid) {
-      return 'Please enter your street address.';
-    }
-    if (c.city.invalid) {
-      return 'Please enter your city.';
-    }
-    if (c.postalCode.invalid) {
-      return 'Please enter your postal code.';
-    }
-    if (c.country.invalid) {
-      return 'Please select your country.';
-    }
-    if (c.password.invalid) {
-      return 'Password must be at least 8 characters and include uppercase, lowercase, and a number.';
-    }
-    return 'Please complete all fields with valid information.';
+
+    const v = this.editForm.getRawValue();
+    this.isSaving = true;
+
+    this.profileService.updateProfile({
+      phoneCountryCode: v.phoneCountryCode ?? '',
+      phoneNumber: v.phoneNumber ?? '',
+      street: v.street ?? '',
+      city: v.city ?? '',
+      postalCode: v.postalCode ?? '',
+      country: v.country ?? ''
+    }).pipe(
+      finalize(() => {
+        this.isSaving = false;
+        this.cdr.detectChanges();
+      })
+    ).subscribe({
+      next: response => {
+        this.isSaveSuccess = true;
+        this.saveMessage = response.message;
+        if (this.profile) {
+          this.profile = {
+            ...this.profile,
+            phoneCountryCode: v.phoneCountryCode ?? '',
+            phoneNumber: v.phoneNumber ?? '',
+            street: v.street ?? '',
+            city: v.city ?? '',
+            postalCode: v.postalCode ?? '',
+            country: v.country ?? ''
+          };
+        }
+        this.cdr.detectChanges();
+      },
+      error: err => {
+        this.isSaveSuccess = false;
+        this.saveMessage = err.error?.message || 'Failed to save changes. Please try again.';
+        this.cdr.detectChanges();
+      }
+    });
   }
 }

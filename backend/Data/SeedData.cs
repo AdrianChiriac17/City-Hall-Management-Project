@@ -18,7 +18,25 @@ public static class SeedData
         await SeedRoleAsync(roleManager, "Forum Administrator", "Monitors forum discussions and ensures respectful communication.");
         await SeedRoleAsync(roleManager, "Citizen", "External user who interacts with the City Hall.");
 
-        if (await dbContext.Users.AnyAsync())
+        // Always seed the admin account if it doesn't exist yet
+        var now = DateTime.UtcNow;
+
+        if (await userManager.FindByEmailAsync("admin@demo.local") is null)
+        {
+            var adminUser = new User
+            {
+                UserName = "admin@demo.local",
+                Email = "admin@demo.local",
+                FirstName = "System",
+                LastName = "Admin",
+                EmailConfirmed = true,
+                CreatedAt = now,
+                UpdatedAt = now
+            };
+            await CreateUserAsync(userManager, adminUser, "Admin123!", "System Administrator");
+        }
+
+        if (await dbContext.Users.CountAsync() > 1)
         {
             return;
         }
@@ -29,7 +47,9 @@ public static class SeedData
             Email = "john.doe@demo.local",
             FirstName = "John",
             LastName = "Doe",
-            EmailConfirmed = true
+            EmailConfirmed = true,
+            CreatedAt = now,
+            UpdatedAt = now
         };
 
         var employeeUser = new User
@@ -38,7 +58,9 @@ public static class SeedData
             Email = "jane.smith@demo.local",
             FirstName = "Jane",
             LastName = "Smith",
-            EmailConfirmed = true
+            EmailConfirmed = true,
+            CreatedAt = now,
+            UpdatedAt = now
         };
 
         await CreateUserAsync(userManager, citizenUser, "Password123", "Citizen");
@@ -47,8 +69,12 @@ public static class SeedData
         var citizenProfile = new CitizenProfile
         {
             User = citizenUser,
-            PhoneNumber = "+1-555-0100",
-            Address = "101 Main Street"
+            PhoneCountryCode = "+40",
+            PhoneNumber = "712 345 678",
+            Street = "Strada Republicii nr. 1",
+            City = "București",
+            PostalCode = "010011",
+            Country = "Romania"
         };
 
         var department = new Department

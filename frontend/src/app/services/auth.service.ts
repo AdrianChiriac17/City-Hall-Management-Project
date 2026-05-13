@@ -9,6 +9,12 @@ export interface RegisterRequest {
   email: string;
   password: string;
   confirmPassword: string;
+  phoneCountryCode: string;
+  phoneNumber: string;
+  street: string;
+  city: string;
+  postalCode: string;
+  country: string;
 }
 
 export interface LoginRequest {
@@ -39,6 +45,10 @@ export class AuthService {
   private readonly currentUserSubject = new BehaviorSubject<CurrentUser | null>(null);
 
   currentUser$ = this.currentUserSubject.asObservable();
+
+  get currentUser(): CurrentUser | null {
+    return this.currentUserSubject.getValue();
+  }
 
   constructor(private readonly http: HttpClient) {}
 

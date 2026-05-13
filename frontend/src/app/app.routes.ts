@@ -2,6 +2,13 @@ import { Routes } from '@angular/router';
 import { HomeComponent } from './pages/home/home.component';
 import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/register/register.component';
+import { ProfileComponent } from './pages/profile/profile.component';
+import { ForumComponent } from './pages/forum/forum.component';
+import { CreateThreadComponent } from './pages/forum/create-thread/create-thread.component';
+import { ThreadDetailComponent } from './pages/forum/thread-detail/thread-detail.component';
+import { AdminComponent } from './pages/admin/admin.component';
+import { authGuard } from './guards/auth.guard';
+import { roleGuard } from './guards/role.guard';
 
 export const routes: Routes = [
   {
@@ -19,6 +26,31 @@ export const routes: Routes = [
   {
     path: 'register',
     component: RegisterComponent
+  },
+  {
+    path: 'profile',
+    component: ProfileComponent,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'forum',
+    component: ForumComponent,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'forum/new',
+    component: CreateThreadComponent,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'forum/thread/:id',
+    component: ThreadDetailComponent,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'admin',
+    component: AdminComponent,
+    canActivate: [roleGuard(['System Administrator'])]
   },
 
   // Placeholder routes pentru paginile informative.
