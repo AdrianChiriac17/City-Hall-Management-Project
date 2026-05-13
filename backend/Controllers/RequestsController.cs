@@ -1,6 +1,7 @@
 using City_Hall_Management_Project.Data;
 using City_Hall_Management_Project.DTOs;
 using City_Hall_Management_Project.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,9 +9,11 @@ namespace City_Hall_Management_Project.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class RequestsController(CityHallDbContext dbContext) : ControllerBase
 {
     [HttpGet]
+    [Authorize(Roles = "Employee,Department Manager,System Administrator")]
     public async Task<ActionResult<IEnumerable<Request>>> GetAll()
     {
         var requests = await dbContext.Requests
@@ -24,6 +27,7 @@ public class RequestsController(CityHallDbContext dbContext) : ControllerBase
     }
 
     [HttpGet("{id:guid}")]
+    [Authorize(Roles = "Employee,Department Manager,System Administrator")]
     public async Task<ActionResult<Request>> GetById(Guid id)
     {
         var request = await dbContext.Requests
@@ -41,6 +45,7 @@ public class RequestsController(CityHallDbContext dbContext) : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Citizen,System Administrator")]
     public async Task<ActionResult<Request>> Create(CreateRequestDto dto)
     {
         var citizenExists = await dbContext.CitizenProfiles.AnyAsync(c => c.Id == dto.CitizenProfileId);
@@ -76,6 +81,7 @@ public class RequestsController(CityHallDbContext dbContext) : ControllerBase
     }
 
     [HttpPut("{id:guid}/status")]
+    [Authorize(Roles = "Employee,Department Manager,System Administrator")]
     public async Task<ActionResult<Request>> UpdateStatus(Guid id, UpdateRequestStatusDto dto)
     {
         var request = await dbContext.Requests.FirstOrDefaultAsync(r => r.Id == id);
@@ -108,6 +114,7 @@ public class RequestsController(CityHallDbContext dbContext) : ControllerBase
     }
 
     [HttpDelete("{id:guid}")]
+    [Authorize(Roles = "System Administrator")]
     public async Task<IActionResult> Delete(Guid id)
     {
         var request = await dbContext.Requests.FirstOrDefaultAsync(r => r.Id == id);

@@ -65,6 +65,61 @@
   flex-shrink: 0;
 }
 
+/* ===== MODERATION ACTIONS (header) ===== */
+.mod-actions {
+  display: flex;
+  gap: 0.6rem;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.mod-btn {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 999px;
+  padding: 0.45rem 1rem;
+  cursor: pointer;
+  transition: opacity 0.18s, transform 0.18s;
+}
+
+.mod-btn:hover {
+  opacity: 0.85;
+  transform: translateY(-1px);
+}
+
+.mod-btn--close {
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.3);
+}
+
+.mod-btn--delete {
+  background: rgba(220, 53, 69, 0.8);
+  color: #fff;
+}
+
+/* ===== DELETE BUTTON ON POST CARDS ===== */
+.post-delete-btn {
+  margin-left: auto;
+  background: none;
+  border: 1px solid #f5c2bc;
+  border-radius: 6px;
+  padding: 0.25rem 0.65rem;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #c0392b;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+
+.post-delete-btn:hover {
+  background: #fdf0ee;
+}
+
 /* ===== CONTENT AREA ===== */
 .detail-content {
   max-width: 860px;

@@ -185,6 +185,67 @@ public class ForumController(
         return Ok(MapAttachment(attachment));
     }
 
+    // ── PATCH /api/forum/threads/{id}/close ───────────────────────────────
+    [HttpPatch("threads/{id:guid}/close")]
+    [Authorize(Roles = "Forum Administrator,System Administrator")]
+    public async Task<IActionResult> ToggleThreadClosed(Guid id)
+    {
+        var thread = await dbContext.ForumThreads.FindAsync(id);
+        if (thread is null) return NotFound(new { message = "Thread not found." });
+
+        thread.IsClosed = !thread.IsClosed;
+        thread.UpdatedAt = DateTime.UtcNow;
+        await dbContext.SaveChangesAsync();
+
+        return Ok(new { isClosed = thread.IsClosed });
+    }
+
+    // ── DELETE /api/forum/threads/{id} ────────────────────────────────────
+    [HttpDelete("threads/{id:guid}")]
+    [Authorize(Roles = "Forum Administrator,System Administrator")]
+    public async Task<IActionResult> DeleteThread(Guid id)
+    {
+        var thread = await dbContext.ForumThreads
+            .Include(t => t.Attachments)
+            .Include(t => t.Posts).ThenInclude(p => p.Attachments)
+            .FirstOrDefaultAsync(t => t.Id == id);
+
+        if (thread is null) return NotFound(new { message = "Thread not found." });
+
+        // Collect all file paths before deleting DB records
+        var paths = thread.Attachments.Select(a => a.StoragePath)
+            .Concat(thread.Posts.SelectMany(p => p.Attachments.Select(a => a.StoragePath)))
+            .ToList();
+
+        // Thread-level attachments have Restrict cascade — remove them manually first
+        dbContext.ForumAttachments.RemoveRange(thread.Attachments);
+        dbContext.ForumThreads.Remove(thread); // cascades to posts and their attachments
+        await dbContext.SaveChangesAsync();
+
+        DeleteFiles(paths);
+        return NoContent();
+    }
+
+    // ── DELETE /api/forum/posts/{id} ──────────────────────────────────────
+    [HttpDelete("posts/{id:guid}")]
+    [Authorize(Roles = "Forum Administrator,System Administrator")]
+    public async Task<IActionResult> DeletePost(Guid id)
+    {
+        var post = await dbContext.ForumPosts
+            .Include(p => p.Attachments)
+            .FirstOrDefaultAsync(p => p.Id == id);
+
+        if (post is null) return NotFound(new { message = "Post not found." });
+
+        var paths = post.Attachments.Select(a => a.StoragePath).ToList();
+
+        dbContext.ForumPosts.Remove(post); // cascades to attachments
+        await dbContext.SaveChangesAsync();
+
+        DeleteFiles(paths);
+        return NoContent();
+    }
+
     // ── Helpers ────────────────────────────────────────────────────────────
 
     private string? ValidateFile(IFormFile? file)
@@ -232,6 +293,21 @@ public class ForumController(
         ContentType = a.ContentType,
         FileSizeBytes = a.FileSizeBytes
     };
+
+    private void DeleteFiles(IEnumerable<string> storagePaths)
+    {
+        var webRoot = env.WebRootPath ?? Path.Combine(env.ContentRootPath, "wwwroot");
+        foreach (var path in storagePaths)
+        {
+            try
+            {
+                var fullPath = Path.Combine(webRoot, path.TrimStart('/').Replace('/', Path.DirectorySeparatorChar));
+                if (System.IO.File.Exists(fullPath))
+                    System.IO.File.Delete(fullPath);
+            }
+            catch { /* best-effort: don't fail the request if file cleanup fails */ }
+        }
+    }
 
     private ForumThreadDetailDto MapThreadDetail(ForumThread t) => new()
     {

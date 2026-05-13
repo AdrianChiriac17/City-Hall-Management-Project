@@ -109,4 +109,26 @@ export class ForumService {
       { withCredentials: true }
     );
   }
+
+  toggleThreadClosed(threadId: string): Observable<{ isClosed: boolean }> {
+    return this.http.patch<{ isClosed: boolean }>(
+      `${this.apiUrl}/threads/${threadId}/close`,
+      {},
+      { withCredentials: true }
+    );
+  }
+
+  deleteThread(threadId: string): Observable<void> {
+    return this.http.delete<void>(
+      `${this.apiUrl}/threads/${threadId}`,
+      { withCredentials: true }
+    );
+  }
+
+  deletePost(postId: string): Observable<void> {
+    return this.http.delete<void>(
+      `${this.apiUrl}/posts/${postId}`,
+      { withCredentials: true }
+    );
+  }
 }

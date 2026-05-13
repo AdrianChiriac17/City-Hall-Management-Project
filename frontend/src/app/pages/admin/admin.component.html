@@ -1,0 +1,90 @@
+<div class="admin-page">
+
+  <div class="page-header">
+    <div class="page-header-content">
+      <h1 class="page-title">User Management</h1>
+      <p class="page-subtitle">Assign roles to registered users.</p>
+    </div>
+  </div>
+
+  <div class="admin-content">
+
+    @if (isLoading) {
+      <div class="user-table">
+        @for (i of [1,2,3,4]; track i) {
+          <div class="user-row user-row--skeleton"></div>
+        }
+      </div>
+
+    } @else if (error) {
+      <div class="error-state">
+        <p class="error-text">{{ error }}</p>
+      </div>
+
+    } @else {
+      <div class="user-table">
+        <div class="table-header">
+          <span class="col-user">User</span>
+          <span class="col-email">Email</span>
+          <span class="col-role">Current Role</span>
+          <span class="col-action">Change Role</span>
+          <span class="col-save"></span>
+        </div>
+
+        @for (user of users; track user.id) {
+          <div class="user-row">
+
+            <!-- Avatar + name -->
+            <div class="col-user user-identity">
+              <div class="avatar">{{ initials(user) }}</div>
+              <div class="user-name-wrap">
+                <span class="user-name">{{ user.firstName }} {{ user.lastName }}</span>
+                <span class="user-since">Since {{ user.createdAt | date:'MMM yyyy' }}</span>
+              </div>
+            </div>
+
+            <!-- Email -->
+            <div class="col-email user-email">{{ user.email }}</div>
+
+            <!-- Current role badge -->
+            <div class="col-role">
+              @if (user.roles.length > 0) {
+                @for (role of user.roles; track role) {
+                  <span class="role-badge" [style.background]="roleColor(role)">{{ role }}</span>
+                }
+              } @else {
+                <span class="no-role">No role</span>
+              }
+            </div>
+
+            <!-- Role selector -->
+            <div class="col-action">
+              <select class="role-select" [(ngModel)]="pendingRole[user.id]">
+                <option value="">— No role —</option>
+                @for (role of availableRoles; track role) {
+                  <option [value]="role">{{ role }}</option>
+                }
+              </select>
+            </div>
+
+            <!-- Save button -->
+            <div class="col-save">
+              <button type="button" class="save-btn"
+                [disabled]="savingUserId === user.id"
+                (click)="saveRole(user)">
+                {{ savingUserId === user.id ? 'Saving…' : 'Save' }}
+              </button>
+              @if (saveMessage[user.id]) {
+                <span class="save-msg" [class.error]="saveMessage[user.id] === 'Error'">
+                  {{ saveMessage[user.id] }}
+                </span>
+              }
+            </div>
+
+          </div>
+        }
+      </div>
+    }
+
+  </div>
+</div>

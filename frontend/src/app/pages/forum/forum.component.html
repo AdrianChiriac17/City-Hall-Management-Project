@@ -60,6 +60,11 @@
               <span class="reply-count">{{ thread.replyCount }}</span>
               <span class="reply-label">{{ thread.replyCount === 1 ? 'reply' : 'replies' }}</span>
             </div>
+            @if (isModerator) {
+              <button type="button" class="thread-delete-btn"
+                (click)="deleteThread($event, thread.id)"
+                aria-label="Delete thread">Delete</button>
+            }
           </div>
         }
       </div>

@@ -43,6 +43,11 @@ export class ThreadDetailComponent implements OnInit {
     return user ? String(user.id) : null;
   }
 
+  get isModerator(): boolean {
+    const roles = this.authService.currentUser?.roles ?? [];
+    return roles.includes('Forum Administrator') || roles.includes('System Administrator');
+  }
+
   get charCount(): number {
     return this.replyForm.controls.content.value?.length ?? 0;
   }
@@ -158,6 +163,33 @@ export class ThreadDetailComponent implements OnInit {
       error: err => {
         this.replyMessage = err.error?.message || 'Failed to post reply. Please try again.';
         this.replyIsSuccess = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  toggleClose(): void {
+    if (!this.thread) return;
+    this.forumService.toggleThreadClosed(this.thread.id).subscribe({
+      next: ({ isClosed }) => {
+        this.thread!.isClosed = isClosed;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  deleteThread(): void {
+    if (!this.thread || !confirm('Delete this entire thread? This cannot be undone.')) return;
+    this.forumService.deleteThread(this.thread.id).subscribe({
+      next: () => this.router.navigate(['/forum'])
+    });
+  }
+
+  deletePost(postId: string): void {
+    if (!confirm('Delete this reply? This cannot be undone.')) return;
+    this.forumService.deletePost(postId).subscribe({
+      next: () => {
+        this.thread!.posts = this.thread!.posts.filter(p => p.id !== postId);
         this.cdr.detectChanges();
       }
     });

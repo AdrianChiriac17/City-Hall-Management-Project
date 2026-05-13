@@ -18,12 +18,28 @@ public static class SeedData
         await SeedRoleAsync(roleManager, "Forum Administrator", "Monitors forum discussions and ensures respectful communication.");
         await SeedRoleAsync(roleManager, "Citizen", "External user who interacts with the City Hall.");
 
-        if (await dbContext.Users.AnyAsync())
+        // Always seed the admin account if it doesn't exist yet
+        var now = DateTime.UtcNow;
+
+        if (await userManager.FindByEmailAsync("admin@demo.local") is null)
+        {
+            var adminUser = new User
+            {
+                UserName = "admin@demo.local",
+                Email = "admin@demo.local",
+                FirstName = "System",
+                LastName = "Admin",
+                EmailConfirmed = true,
+                CreatedAt = now,
+                UpdatedAt = now
+            };
+            await CreateUserAsync(userManager, adminUser, "Admin123!", "System Administrator");
+        }
+
+        if (await dbContext.Users.CountAsync() > 1)
         {
             return;
         }
-
-        var now = DateTime.UtcNow;
 
         var citizenUser = new User
         {

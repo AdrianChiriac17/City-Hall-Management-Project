@@ -183,6 +183,25 @@
   font-weight: 600;
 }
 
+/* ===== MODERATOR DELETE BUTTON (thread card) ===== */
+.thread-delete-btn {
+  background: none;
+  border: 1px solid #f5c2bc;
+  border-radius: 6px;
+  padding: 0.28rem 0.7rem;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #c0392b;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+
+.thread-delete-btn:hover {
+  background: #fdf0ee;
+}
+
 /* ===== EMPTY / ERROR STATE ===== */
 .empty-state {
   text-align: center;
