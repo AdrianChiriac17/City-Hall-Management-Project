@@ -1,5 +1,7 @@
 using City_Hall_Management_Project.Data;
 using City_Hall_Management_Project.Models;
+using City_Hall_Management_Project.Repositories;
+using City_Hall_Management_Project.Services;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -56,6 +58,10 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
     options.SlidingExpiration = true;
 });
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IDocumentRepository, DocumentRepository>();
+builder.Services.AddScoped<IDocumentService, DocumentService>();
 
 builder.Services.AddCors(options =>
 {
