@@ -47,8 +47,12 @@ public static class SeedData
         var citizenProfile = new CitizenProfile
         {
             User = citizenUser,
-            PhoneNumber = "+1-555-0100",
-            Address = "101 Main Street"
+            PhoneCountryCode = "+40",
+            PhoneNumber = "712 345 678",
+            Street = "Strada Republicii nr. 1",
+            City = "București",
+            PostalCode = "010011",
+            Country = "Romania"
         };
 
         var department = new Department

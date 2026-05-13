@@ -1,3 +1,4 @@
+using City_Hall_Management_Project.Data;
 using City_Hall_Management_Project.DTOs.Auth;
 using City_Hall_Management_Project.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -11,6 +12,7 @@ namespace City_Hall_Management_Project.Controllers;
 public class AuthController(
     UserManager<User> userManager,
     SignInManager<User> signInManager,
+    CityHallDbContext dbContext,
     ILogger<AuthController> logger) : ControllerBase
 {
     [HttpPost("register")]
@@ -21,7 +23,7 @@ public class AuthController(
 
         if (dto.Password != dto.ConfirmPassword)
         {
-            logger.LogWarning("Registration failed for in {ElapsedMilliseconds}ms: Passwords do not match", stopwatch.ElapsedMilliseconds);
+            logger.LogWarning("Registration failed in {ElapsedMilliseconds}ms: Passwords do not match", stopwatch.ElapsedMilliseconds);
             return BadRequest(new AuthResponseDto
             {
                 Success = false,
@@ -34,7 +36,7 @@ public class AuthController(
 
         if (existingUser is not null)
         {
-            logger.LogWarning("Registration failed in {ElapsedMilliseconds}ms: Account already exists",stopwatch.ElapsedMilliseconds);
+            logger.LogWarning("Registration failed in {ElapsedMilliseconds}ms: Account already exists", stopwatch.ElapsedMilliseconds);
             return BadRequest(new AuthResponseDto
             {
                 Success = false,
@@ -69,11 +71,40 @@ public class AuthController(
         var roleAssignResult = await userManager.AddToRoleAsync(user, defaultRole);
         if (!roleAssignResult.Succeeded)
         {
+            await userManager.DeleteAsync(user);
             logger.LogError("Role assignment failed in {ElapsedMilliseconds}ms: {Errors}", stopwatch.ElapsedMilliseconds, FormatErrors(roleAssignResult));
             return BadRequest(new AuthResponseDto
             {
                 Success = false,
                 Message = FormatErrors(roleAssignResult)
+            });
+        }
+
+        var citizenProfile = new CitizenProfile
+        {
+            UserId = user.Id,
+            PhoneCountryCode = dto.PhoneCountryCode,
+            PhoneNumber = dto.PhoneNumber,
+            Street = dto.Street,
+            City = dto.City,
+            PostalCode = dto.PostalCode,
+            Country = dto.Country
+        };
+
+        dbContext.CitizenProfiles.Add(citizenProfile);
+
+        try
+        {
+            await dbContext.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            await userManager.DeleteAsync(user);
+            logger.LogError(ex, "CitizenProfile creation failed in {ElapsedMilliseconds}ms", stopwatch.ElapsedMilliseconds);
+            return StatusCode(500, new AuthResponseDto
+            {
+                Success = false,
+                Message = "Registration failed. Please try again."
             });
         }
 
@@ -126,7 +157,7 @@ public class AuthController(
 
         user.UpdatedAt = DateTime.UtcNow;
         await userManager.UpdateAsync(user);
-        logger.LogInformation("Login processing finished globally in {ElapsedMilliseconds}ms", stopwatch.ElapsedMilliseconds);
+        logger.LogInformation("Login processing finished in {ElapsedMilliseconds}ms", stopwatch.ElapsedMilliseconds);
 
         return Ok(new AuthResponseDto
         {

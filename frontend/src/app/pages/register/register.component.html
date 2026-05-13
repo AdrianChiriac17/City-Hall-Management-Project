@@ -51,6 +51,62 @@
             </div>
           </div>
 
+          <!-- Phone Number -->
+          <div class="field-wrap">
+            <label class="field-label" for="phoneNumber">Phone Number</label>
+            <div class="field-row phone-field-row">
+              <select id="phoneCountryCode" formControlName="phoneCountryCode" class="phone-code-select"
+                aria-label="Country dialling code">
+                @for (code of countryCodes; track code.dial + code.name) {
+                  <option [value]="code.dial">{{ code.dial }} — {{ code.name }}</option>
+                }
+              </select>
+              <span class="phone-sep" aria-hidden="true">|</span>
+              <input id="phoneNumber" type="tel" formControlName="phoneNumber"
+                class="field-input" placeholder="712 345 678"/>
+            </div>
+          </div>
+
+          <!-- Address section -->
+          <p class="section-label">Address</p>
+
+          <div class="field-wrap">
+            <label class="field-label" for="street">Street</label>
+            <div class="field-row">
+              <input id="street" type="text" formControlName="street"
+                placeholder="Strada Republicii nr. 1" class="field-input"/>
+            </div>
+          </div>
+
+          <div class="name-row">
+            <div class="field-wrap">
+              <label class="field-label" for="city">City</label>
+              <div class="field-row">
+                <input id="city" type="text" formControlName="city"
+                  placeholder="Cluj-Napoca" class="field-input"/>
+              </div>
+            </div>
+            <div class="field-wrap">
+              <label class="field-label" for="postalCode">Postal Code</label>
+              <div class="field-row">
+                <input id="postalCode" type="text" formControlName="postalCode"
+                  placeholder="400001" class="field-input"/>
+              </div>
+            </div>
+          </div>
+
+          <div class="field-wrap">
+            <label class="field-label" for="country">Country</label>
+            <div class="field-row">
+              <select id="country" formControlName="country" class="field-input field-select"
+                aria-label="Country">
+                @for (c of countries; track c) {
+                  <option [value]="c">{{ c }}</option>
+                }
+              </select>
+            </div>
+          </div>
+
           <!-- Password row -->
           <div class="password-row">
             <div class="field-wrap">
@@ -64,7 +120,7 @@
                   placeholder="**********"
                 />
                 <button type="button" class="eye-btn"
-                  [attr.aria-label]="showPassword ? 'Hide' : 'Show'"
+                  [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
                   (click)="togglePasswordVisibility()">
                   @if (!showPassword) {
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -93,7 +149,7 @@
                   placeholder="**********"
                 />
                 <button type="button" class="eye-btn"
-                  [attr.aria-label]="showConfirmPassword ? 'Hide' : 'Show'"
+                  [attr.aria-label]="showConfirmPassword ? 'Hide password' : 'Show password'"
                   (click)="toggleConfirmPasswordVisibility()">
                   @if (!showConfirmPassword) {
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">

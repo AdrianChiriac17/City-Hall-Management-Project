@@ -9,6 +9,12 @@ export interface RegisterRequest {
   email: string;
   password: string;
   confirmPassword: string;
+  phoneCountryCode: string;
+  phoneNumber: string;
+  street: string;
+  city: string;
+  postalCode: string;
+  country: string;
 }
 
 export interface LoginRequest {
