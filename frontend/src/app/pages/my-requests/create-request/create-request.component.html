@@ -1,0 +1,61 @@
+<div class="create-request-page">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div class="page-header-content">
+      <a routerLink="/my-requests" class="back-link">← Back to My Requests</a>
+      <h1 class="page-title">New Request</h1>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="create-request-content">
+    <div class="form-card">
+      <form [formGroup]="form" (ngSubmit)="submit()">
+
+        <div class="field-wrap">
+          <label class="field-label" for="req-title">Title</label>
+          <input
+            id="req-title"
+            type="text"
+            formControlName="title"
+            class="field-input"
+            placeholder="Brief description of your request"
+          />
+          @if (form.get('title')?.touched && form.get('title')?.hasError('required')) {
+            <p class="field-error">Title is required.</p>
+          }
+          @if (form.get('title')?.touched && form.get('title')?.hasError('maxlength')) {
+            <p class="field-error">Title must be under 200 characters.</p>
+          }
+        </div>
+
+        <div class="field-wrap">
+          <label class="field-label" for="req-desc">Description</label>
+          <textarea
+            id="req-desc"
+            formControlName="description"
+            class="field-input field-textarea"
+            placeholder="Provide details about your request…"
+          ></textarea>
+          @if (form.get('description')?.touched && form.get('description')?.hasError('required')) {
+            <p class="field-error">Description is required.</p>
+          }
+        </div>
+
+        @if (submitError) {
+          <p class="submit-error">{{ submitError }}</p>
+        }
+
+        <div class="form-actions">
+          <a routerLink="/my-requests" class="cancel-link">Cancel</a>
+          <button type="submit" class="submit-btn" [disabled]="isSubmitting">
+            {{ isSubmitting ? 'Submitting…' : 'Submit Request' }}
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+</div>
