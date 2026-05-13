@@ -1,101 +1,52 @@
-import { Component, OnDestroy, inject } from '@angular/core';
-import { NgFor } from '@angular/common';
+import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { AuthService } from '../../services/auth.service';
-
-interface HomeFeature {
-  id?: string;
-  title: string;
-  subtitle: string;
-  text: string;
-  image: string;
-  reverse?: boolean;
-}
-
-interface ServiceCard {
-  title: string;
-  text: string;
-  anchor: string;
-}
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [NgFor, RouterLink],
+  imports: [RouterLink, CommonModule, FormsModule],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent implements OnDestroy {
-  private readonly authService = inject(AuthService);
-  private readonly authSubscription: Subscription;
+export class HomeComponent implements AfterViewInit, OnDestroy {
+  newsletterEmail = '';
+  newsletterSubmitted = false;
 
-  isLoggedIn = false;
+  private observers: IntersectionObserver[] = [];
 
-  readonly features: HomeFeature[] = [
-    {
-      id: 'requests',
-      title: 'Digital services for citizens',
-      subtitle: 'Submit and track requests online',
-      text: 'Citizens can create accounts, send requests to the city hall and follow their status from one simple dashboard.',
-      image: '/images/home/city-hall-building.jpg'
-    },
-    {
-      id: 'announcements',
-      title: 'Official announcements',
-      subtitle: 'Stay informed about your community',
-      text: 'Important updates, public notices and city hall announcements are available directly on the platform.',
-      image: '/images/home/city-street.jpg',
-      reverse: true
-    },
-    {
-      id: 'forum',
-      title: 'Community communication',
-      subtitle: 'A space for questions and discussions',
-      text: 'Citizens can use the forum to ask questions, follow discussions and communicate more easily with city hall staff.',
-      image: '/images/home/community-meeting.jpg'
-    },
-    {
-      id: 'documents',
-      title: 'Document access',
-      subtitle: 'Public and personal documents in one place',
-      text: 'Users can download public documents, attach files to requests and manage the documents linked to their account.',
-      image: '/images/home/public-documents.jpg',
-      reverse: true
-    },
-    {
-      title: 'Organized administration',
-      subtitle: 'Better internal workflow',
-      text: 'The platform helps departments, employees, requests and documents stay organized in a clear digital system.',
-      image: '/images/home/city-office.jpg'
-    }
-  ];
+  ngAfterViewInit(): void {
+    const animatedEls = document.querySelectorAll('.animate-on-scroll');
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      },
+      { threshold: 0.12 }
+    );
 
-  readonly services: ServiceCard[] = [
-    {
-      title: 'Citizen Requests',
-      text: 'Submit requests online and check their progress.',
-      anchor: '#requests'
-    },
-    {
-      title: 'Documents',
-      text: 'Access public documents and manage personal files.',
-      anchor: '#documents'
-    },
-    {
-      title: 'Announcements',
-      text: 'Read official updates published by city hall.',
-      anchor: '#announcements'
-    }
-  ];
-
-  constructor() {
-    this.authSubscription = this.authService.currentUser$.subscribe(user => {
-      this.isLoggedIn = user !== null;
-    });
+    animatedEls.forEach((el) => observer.observe(el));
+    this.observers.push(observer);
   }
 
   ngOnDestroy(): void {
-    this.authSubscription.unsubscribe();
+    this.observers.forEach((obs) => obs.disconnect());
+  }
+
+  scrollToServices(): void {
+    const el = document.getElementById('services');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+
+  submitNewsletter(): void {
+    if (this.newsletterEmail) {
+      this.newsletterSubmitted = true;
+    }
   }
 }

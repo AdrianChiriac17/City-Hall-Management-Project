@@ -15,7 +15,6 @@ export class NavbarComponent {
   private readonly router = inject(Router);
 
   isMenuOpen = false;
-  isUserMenuOpen = false;
 
   readonly currentUser = toSignal(this.authService.currentUser$, { initialValue: null });
 
@@ -33,11 +32,6 @@ export class NavbarComponent {
 
   closeMenu(): void {
     this.isMenuOpen = false;
-    this.isUserMenuOpen = false;
-  }
-
-  toggleUserMenu(): void {
-    this.isUserMenuOpen = !this.isUserMenuOpen;
   }
 
   logout(): void {

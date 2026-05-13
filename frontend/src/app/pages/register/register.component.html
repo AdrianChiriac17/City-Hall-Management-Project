@@ -1,130 +1,130 @@
 <main class="auth-page">
-  <section class="auth-wrapper">
-    <div class="auth-brand-panel">
-      <p>Primaria Municipiului Craiova</p>
+  <div class="auth-dots" aria-hidden="true"></div>
 
-      <div class="city-mark" aria-hidden="true">
-        <span></span>
-        <strong>CM</strong>
+  <!-- Transparent centered navbar -->
+  <nav class="auth-nav">
+    <a routerLink="/" class="auth-nav-link">HOME</a>
+    <a routerLink="/dashboard" class="auth-nav-link">DASHBOARD</a>
+    <a routerLink="/chatbot" class="auth-nav-link">CHAT BOT</a>
+    <a routerLink="/login" class="auth-nav-link auth-nav-cta">LOG IN</a>
+  </nav>
+
+  <!-- Card -->
+  <div class="card-wrap">
+    <div class="auth-card">
+
+      <!-- Left dark brand panel -->
+      <div class="brand-panel">
+        <img src="assets/images/LogoCityHall.png" alt="City Hall Logo" class="brand-logo-img">
       </div>
+
+      <!-- Right form panel -->
+      <div class="form-panel">
+        <h1 class="form-title">Sign up</h1>
+
+        <form class="auth-form" [formGroup]="registerForm" (ngSubmit)="submit()">
+
+          <!-- Full Name row: First + Last -->
+          <div class="name-row">
+            <div class="field-wrap">
+              <label class="field-label" for="firstName">First Name</label>
+              <div class="field-row">
+                <input id="firstName" type="text" formControlName="firstName"
+                  placeholder="Ion" class="field-input"/>
+              </div>
+            </div>
+            <div class="field-wrap">
+              <label class="field-label" for="lastName">Last Name</label>
+              <div class="field-row">
+                <input id="lastName" type="text" formControlName="lastName"
+                  placeholder="Popescu" class="field-input"/>
+              </div>
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div class="field-wrap">
+            <label class="field-label" for="reg-email">Email Address</label>
+            <div class="field-row">
+              <input id="reg-email" type="email" formControlName="email"
+                placeholder="ion.popescu@gmail.com" class="field-input"/>
+            </div>
+          </div>
+
+          <!-- Password row -->
+          <div class="password-row">
+            <div class="field-wrap">
+              <label class="field-label" for="reg-password">Password</label>
+              <div class="field-row">
+                <input
+                  id="reg-password"
+                  class="field-input password-input"
+                  [type]="showPassword ? 'text' : 'password'"
+                  formControlName="password"
+                  placeholder="**********"
+                />
+                <button type="button" class="eye-btn"
+                  [attr.aria-label]="showPassword ? 'Hide' : 'Show'"
+                  (click)="togglePasswordVisibility()">
+                  @if (!showPassword) {
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                      <path d="M2.1 12s3.6-6.5 9.9-6.5S21.9 12 21.9 12s-3.6 6.5-9.9 6.5S2.1 12 2.1 12Z"/>
+                      <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                  } @else {
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                      <path d="M3 3l18 18"/>
+                      <path d="M10.6 5.7A10.6 10.6 0 0 1 12 5.5c6.3 0 9.9 6.5 9.9 6.5a18.4 18.4 0 0 1-2.6 3.4"/>
+                      <path d="M6.5 6.8A18.2 18.2 0 0 0 2.1 12s3.6 6.5 9.9 6.5c1.5 0 2.8-.4 4-1"/>
+                    </svg>
+                  }
+                </button>
+              </div>
+            </div>
+
+            <div class="field-wrap">
+              <label class="field-label" for="confirmPassword">Confirm Password</label>
+              <div class="field-row">
+                <input
+                  id="confirmPassword"
+                  class="field-input password-input"
+                  [type]="showConfirmPassword ? 'text' : 'password'"
+                  formControlName="confirmPassword"
+                  placeholder="**********"
+                />
+                <button type="button" class="eye-btn"
+                  [attr.aria-label]="showConfirmPassword ? 'Hide' : 'Show'"
+                  (click)="toggleConfirmPasswordVisibility()">
+                  @if (!showConfirmPassword) {
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                      <path d="M2.1 12s3.6-6.5 9.9-6.5S21.9 12 21.9 12s-3.6 6.5-9.9 6.5S2.1 12 2.1 12Z"/>
+                      <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                  } @else {
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                      <path d="M3 3l18 18"/>
+                      <path d="M10.6 5.7A10.6 10.6 0 0 1 12 5.5c6.3 0 9.9 6.5 9.9 6.5a18.4 18.4 0 0 1-2.6 3.4"/>
+                      <path d="M6.5 6.8A18.2 18.2 0 0 0 2.1 12s3.6 6.5 9.9 6.5c1.5 0 2.8-.4 4-1"/>
+                    </svg>
+                  }
+                </button>
+              </div>
+            </div>
+          </div>
+
+          @if (message) {
+            <p class="form-message" [class.success]="isSuccess">{{ message }}</p>
+          }
+
+          <button type="submit" class="submit-btn" [disabled]="isSubmitting">
+            {{ isSubmitting ? 'Creating...' : 'Create Account' }}
+          </button>
+
+          <p class="switch-text">or <a routerLink="/login">Log in</a></p>
+        </form>
+      </div>
+
     </div>
+  </div>
 
-    <div class="auth-form-panel">
-      <h1>Sign up</h1>
-
-      <form class="auth-form" [formGroup]="registerForm" (ngSubmit)="submit()">
-        <div class="name-grid">
-          <div>
-            <label class="field-label" for="firstName">First Name</label>
-            <div class="input-group">
-              <input id="firstName" type="text" formControlName="firstName" placeholder="Ion" />
-            </div>
-          </div>
-
-          <div>
-            <label class="field-label" for="lastName">Last Name</label>
-            <div class="input-group">
-              <input id="lastName" type="text" formControlName="lastName" placeholder="Popescu" />
-            </div>
-          </div>
-        </div>
-
-        <label class="field-label" for="email">Email Address</label>
-        <div class="input-group">
-          <input id="email" type="email" formControlName="email" placeholder="ion.popescu@gmail.com" />
-        </div>
-
-        <div class="password-grid">
-          <div>
-            <label class="field-label" for="password">Password</label>
-
-            <div class="input-group">
-              <input
-                id="password"
-                class="password-input"
-                [type]="showPassword ? 'text' : 'password'"
-                formControlName="password"
-                placeholder="**********"
-              />
-
-              <button
-                type="button"
-                class="eye-button"
-                [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
-                [attr.title]="showPassword ? 'Hide password' : 'Show password'"
-                [attr.aria-pressed]="showPassword"
-                (click)="togglePasswordVisibility()"
-              >
-                @if (!showPassword) {
-                  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                    <path d="M2.1 12s3.6-6.5 9.9-6.5S21.9 12 21.9 12s-3.6 6.5-9.9 6.5S2.1 12 2.1 12Z" />
-                    <circle cx="12" cy="12" r="3" />
-                  </svg>
-                } @else {
-                  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                    <path d="M3 3l18 18" />
-                    <path d="M10.6 5.7A10.6 10.6 0 0 1 12 5.5c6.3 0 9.9 6.5 9.9 6.5a18.4 18.4 0 0 1-2.6 3.4" />
-                    <path d="M6.5 6.8A18.2 18.2 0 0 0 2.1 12s3.6 6.5 9.9 6.5c1.5 0 2.8-.4 4-1" />
-                    <path d="M9.9 9.9A3 3 0 0 0 14.1 14.1" />
-                  </svg>
-                }
-              </button>
-            </div>
-          </div>
-
-          <div>
-            <label class="field-label" for="confirmPassword">Confirm Password</label>
-
-            <div class="input-group">
-              <input
-                id="confirmPassword"
-                class="password-input"
-                [type]="showConfirmPassword ? 'text' : 'password'"
-                formControlName="confirmPassword"
-                placeholder="**********"
-              />
-
-              <button
-                type="button"
-                class="eye-button"
-                [attr.aria-label]="showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'"
-                [attr.title]="showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'"
-                [attr.aria-pressed]="showConfirmPassword"
-                (click)="toggleConfirmPasswordVisibility()"
-              >
-                @if (!showConfirmPassword) {
-                  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                    <path d="M2.1 12s3.6-6.5 9.9-6.5S21.9 12 21.9 12s-3.6 6.5-9.9 6.5S2.1 12 2.1 12Z" />
-                    <circle cx="12" cy="12" r="3" />
-                  </svg>
-                } @else {
-                  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                    <path d="M3 3l18 18" />
-                    <path d="M10.6 5.7A10.6 10.6 0 0 1 12 5.5c6.3 0 9.9 6.5 9.9 6.5a18.4 18.4 0 0 1-2.6 3.4" />
-                    <path d="M6.5 6.8A18.2 18.2 0 0 0 2.1 12s3.6 6.5 9.9 6.5c1.5 0 2.8-.4 4-1" />
-                    <path d="M9.9 9.9A3 3 0 0 0 14.1 14.1" />
-                  </svg>
-                }
-              </button>
-            </div>
-          </div>
-        </div>
-
-        @if (message) {
-          <p class="form-message" [class.success]="isSuccess">
-            {{ message }}
-          </p>
-        }
-
-        <button type="submit" class="submit-button" [disabled]="isSubmitting">
-          {{ isSubmitting ? 'Creating...' : 'Create Account' }}
-        </button>
-
-        <p class="switch-text">
-          or
-          <a routerLink="/login">Log in</a>
-        </p>
-      </form>
-    </div>
-  </section>
 </main>
