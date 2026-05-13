@@ -12,6 +12,9 @@ import { UploadDocumentComponent } from './pages/my-documents/upload-document/up
 import { DocumentDetailComponent } from './pages/my-documents/document-detail/document-detail.component';
 import { DocumentApprovalComponent } from './pages/admin/document-approval/document-approval.component';
 import { DocumentReviewComponent } from './pages/admin/document-review/document-review.component';
+import { MyRequestsComponent } from './pages/my-requests/my-requests.component';
+import { CreateRequestComponent } from './pages/my-requests/create-request/create-request.component';
+import { StaffRequestsComponent } from './pages/staff-requests/staff-requests.component';
 import { authGuard } from './guards/auth.guard';
 import { roleGuard } from './guards/role.guard';
 
@@ -56,6 +59,21 @@ export const routes: Routes = [
     path: 'admin',
     component: AdminComponent,
     canActivate: [roleGuard(['System Administrator'])]
+  },
+  {
+    path: 'my-requests',
+    component: MyRequestsComponent,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'my-requests/new',
+    component: CreateRequestComponent,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'requests',
+    component: StaffRequestsComponent,
+    canActivate: [roleGuard(['Employee', 'Department Manager', 'System Administrator'])]
   },
   {
     path: 'my-documents',

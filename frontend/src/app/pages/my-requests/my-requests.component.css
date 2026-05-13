@@ -1,0 +1,214 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
+
+/* ===== PAGE ===== */
+.requests-page {
+  min-height: 100vh;
+  background: #f5f7fa;
+  font-family: 'Manrope', sans-serif;
+}
+
+/* ===== HEADER ===== */
+.page-header {
+  background: linear-gradient(135deg, #0f2035 0%, #1b3a5c 100%);
+  padding: 2.2rem 2rem;
+}
+
+.page-header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.page-title {
+  font-size: 1.65rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 0.25rem;
+}
+
+.page-subtitle {
+  font-size: 0.88rem;
+  color: #7a9dc0;
+  margin: 0;
+}
+
+.new-request-btn {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  height: 42px;
+  padding: 0 1.5rem;
+  background: linear-gradient(90deg, #00c6a2, #00a688);
+  color: #fff;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  border-radius: 999px;
+  text-decoration: none;
+  transition: opacity 0.2s, transform 0.18s;
+}
+
+.new-request-btn:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+
+/* ===== CONTENT ===== */
+.requests-content {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+/* ===== BANNER ===== */
+.banner-message {
+  font-size: 0.88rem;
+  font-weight: 600;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  margin-bottom: 1.25rem;
+  background: #fdf0ef;
+  color: #c0392b;
+}
+
+.banner-message.success {
+  background: #edfaf5;
+  color: #00856b;
+}
+
+/* ===== LIST ===== */
+.requests-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+/* ===== CARD ===== */
+.request-card {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 1.2rem 1.4rem;
+  box-shadow: 0 2px 12px rgba(30, 50, 80, 0.07);
+  transition: box-shadow 0.18s, transform 0.18s;
+}
+
+.request-card:hover {
+  box-shadow: 0 6px 24px rgba(30, 50, 80, 0.12);
+  transform: translateY(-1px);
+}
+
+.request-card--skeleton {
+  height: 100px;
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+.request-card--skeleton:hover {
+  box-shadow: 0 2px 12px rgba(30, 50, 80, 0.07);
+  transform: none;
+}
+
+.request-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.request-card__title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1a2a3a;
+  margin: 0;
+}
+
+.request-card__status {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 0.7rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.status--submitted   { background: #dbeafe; color: #1d4ed8; }
+.status--in-progress { background: #fef9c3; color: #92400e; }
+.status--resolved    { background: #edfaf5; color: #00856b; }
+.status--rejected    { background: #fdf0ef; color: #c0392b; }
+.status--cancelled   { background: #f1f5f9; color: #64748b; }
+
+.request-card__desc {
+  font-size: 0.85rem;
+  color: #4a5568;
+  margin: 0 0 0.85rem;
+  line-height: 1.55;
+}
+
+.request-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.request-card__date {
+  font-size: 0.78rem;
+  color: #8a9bb0;
+}
+
+.cancel-btn {
+  height: 34px;
+  padding: 0 1rem;
+  background: #fff0f0;
+  color: #c0392b;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border: 1px solid #f5c6c6;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.cancel-btn:hover:not(:disabled) { background: #fde8e8; }
+.cancel-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* ===== EMPTY / ERROR ===== */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 4rem 1rem;
+  text-align: center;
+  color: #8a9bb0;
+  font-size: 0.9rem;
+}
+
+.error-text {
+  font-size: 0.92rem;
+  color: #c0392b;
+  background: #fdf0ef;
+  padding: 1rem 1.2rem;
+  border-radius: 10px;
+  margin: 0;
+}
+
+/* ===== SKELETON ===== */
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.45; }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 600px) {
+  .page-header-content { flex-direction: column; align-items: flex-start; }
+  .requests-content { padding: 1.2rem 1rem 3rem; }
+}

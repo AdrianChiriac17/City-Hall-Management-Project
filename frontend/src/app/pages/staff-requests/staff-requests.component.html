@@ -1,0 +1,71 @@
+<div class="staff-requests-page">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div class="page-header-content">
+      <h1 class="page-title">All Requests</h1>
+      <p class="page-subtitle">Review and update citizen request statuses.</p>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="requests-content">
+
+    @if (isLoading) {
+      <div class="requests-list">
+        @for (i of [1,2,3]; track i) {
+          <div class="request-card request-card--skeleton"></div>
+        }
+      </div>
+
+    } @else if (error) {
+      <p class="error-text">{{ error }}</p>
+
+    } @else if (requests.length === 0) {
+      <div class="empty-state">
+        <p>No requests have been submitted yet.</p>
+      </div>
+
+    } @else {
+      <div class="requests-list">
+        @for (req of requests; track req.id) {
+          <div class="request-card">
+            <div class="request-card__header">
+              <h2 class="request-card__title">{{ req.title }}</h2>
+              <span class="request-card__status" [class]="statusClass(req.status)">{{ req.status }}</span>
+            </div>
+            <p class="request-card__desc">{{ req.description }}</p>
+            <p class="request-card__date">Submitted {{ req.createdAt | date:'MMM d, yyyy, HH:mm' }}</p>
+            <div class="status-form">
+              <select class="status-select" [(ngModel)]="pendingStatus[req.id]">
+                @for (s of statuses; track s) {
+                  <option [value]="s">{{ s }}</option>
+                }
+              </select>
+              <input
+                type="text"
+                class="note-input"
+                [(ngModel)]="pendingNote[req.id]"
+                placeholder="Optional note…"
+              />
+              <button
+                type="button"
+                class="update-btn"
+                [disabled]="savingId === req.id"
+                (click)="saveStatus(req)"
+              >
+                {{ savingId === req.id ? 'Saving…' : 'Update' }}
+              </button>
+              @if (saveMessage[req.id]?.text) {
+                <span class="save-msg" [class.error]="!saveMessage[req.id].success">
+                  {{ saveMessage[req.id].text }}
+                </span>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+  </div>
+</div>

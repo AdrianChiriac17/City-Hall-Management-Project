@@ -45,6 +45,20 @@
         (click)="closeMenu()"
       >Profile</a>
 
+      @if (isStaff) {
+        <a
+          routerLink="/requests"
+          routerLinkActive="active"
+          (click)="closeMenu()"
+        >Requests</a>
+      } @else {
+        <a
+          routerLink="/my-requests"
+          routerLinkActive="active"
+          (click)="closeMenu()"
+        >My Requests</a>
+      }
+
       @if (isAdmin) {
         <a
           routerLink="/admin"

@@ -1,0 +1,64 @@
+<div class="requests-page">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div class="page-header-content">
+      <div>
+        <h1 class="page-title">My Requests</h1>
+        <p class="page-subtitle">Submit and track your requests to the city hall.</p>
+      </div>
+      <a routerLink="/my-requests/new" class="new-request-btn">+ New Request</a>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="requests-content">
+
+    @if (cancelMessage) {
+      <p class="banner-message" [class.success]="isCancelSuccess">{{ cancelMessage }}</p>
+    }
+
+    @if (isLoading) {
+      <div class="requests-list">
+        @for (i of [1,2,3]; track i) {
+          <div class="request-card request-card--skeleton"></div>
+        }
+      </div>
+
+    } @else if (error) {
+      <p class="error-text">{{ error }}</p>
+
+    } @else if (requests.length === 0) {
+      <div class="empty-state">
+        <p>You have no requests yet. Click <strong>+ New Request</strong> to get started.</p>
+      </div>
+
+    } @else {
+      <div class="requests-list">
+        @for (req of requests; track req.id) {
+          <div class="request-card">
+            <div class="request-card__header">
+              <h2 class="request-card__title">{{ req.title }}</h2>
+              <span class="request-card__status" [class]="statusClass(req.status)">{{ req.status }}</span>
+            </div>
+            <p class="request-card__desc">{{ req.description }}</p>
+            <div class="request-card__footer">
+              <span class="request-card__date">Submitted {{ req.createdAt | date:'MMM d, yyyy' }}</span>
+              @if (canCancel(req.status)) {
+                <button
+                  class="cancel-btn"
+                  type="button"
+                  [disabled]="cancellingId === req.id"
+                  (click)="cancel(req.id)"
+                >
+                  {{ cancellingId === req.id ? 'Cancelling…' : 'Cancel Request' }}
+                </button>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+  </div>
+</div>
