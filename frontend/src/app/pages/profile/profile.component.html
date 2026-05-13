@@ -169,6 +169,52 @@
           </form>
         </div>
 
+        <!-- ── Change password ── -->
+        <div class="profile-card">
+          <h2 class="card-title">Change Password</h2>
+          <form class="edit-form" [formGroup]="passwordForm" (ngSubmit)="changePassword()">
+
+            <div class="field-wrap">
+              <label class="field-label" for="pw-current">Current Password</label>
+              <div class="field-row">
+                <input id="pw-current" type="password" formControlName="currentPassword"
+                  class="field-input" placeholder="Enter current password" autocomplete="current-password"/>
+              </div>
+            </div>
+
+            <div class="field-wrap">
+              <label class="field-label" for="pw-new">New Password</label>
+              <div class="field-row">
+                <input id="pw-new" type="password" formControlName="newPassword"
+                  class="field-input" placeholder="At least 8 characters" autocomplete="new-password"/>
+              </div>
+              @if (passwordForm.get('newPassword')?.touched && passwordForm.get('newPassword')?.hasError('minlength')) {
+                <p class="field-error">Password must be at least 8 characters.</p>
+              }
+            </div>
+
+            <div class="field-wrap">
+              <label class="field-label" for="pw-confirm">Confirm New Password</label>
+              <div class="field-row">
+                <input id="pw-confirm" type="password" formControlName="confirmNewPassword"
+                  class="field-input" placeholder="Repeat new password" autocomplete="new-password"/>
+              </div>
+              @if (passwordForm.touched && passwordForm.hasError('passwordsMismatch')) {
+                <p class="field-error">Passwords do not match.</p>
+              }
+            </div>
+
+            @if (passwordMessage) {
+              <p class="form-message" [class.success]="isPasswordSuccess">{{ passwordMessage }}</p>
+            }
+
+            <button type="submit" class="save-btn" [disabled]="isChangingPassword">
+              {{ isChangingPassword ? 'Saving…' : 'Change Password' }}
+            </button>
+
+          </form>
+        </div>
+
       </div>
 
       <!-- Quick Actions -->
