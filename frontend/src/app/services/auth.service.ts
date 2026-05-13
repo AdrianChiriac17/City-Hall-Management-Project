@@ -46,6 +46,10 @@ export class AuthService {
 
   currentUser$ = this.currentUserSubject.asObservable();
 
+  get currentUser(): CurrentUser | null {
+    return this.currentUserSubject.getValue();
+  }
+
   constructor(private readonly http: HttpClient) {}
 
   register(request: RegisterRequest): Observable<AuthResponse> {

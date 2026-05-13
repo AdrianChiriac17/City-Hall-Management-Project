@@ -23,13 +23,17 @@ public static class SeedData
             return;
         }
 
+        var now = DateTime.UtcNow;
+
         var citizenUser = new User
         {
             UserName = "john.doe@demo.local",
             Email = "john.doe@demo.local",
             FirstName = "John",
             LastName = "Doe",
-            EmailConfirmed = true
+            EmailConfirmed = true,
+            CreatedAt = now,
+            UpdatedAt = now
         };
 
         var employeeUser = new User
@@ -38,7 +42,9 @@ public static class SeedData
             Email = "jane.smith@demo.local",
             FirstName = "Jane",
             LastName = "Smith",
-            EmailConfirmed = true
+            EmailConfirmed = true,
+            CreatedAt = now,
+            UpdatedAt = now
         };
 
         await CreateUserAsync(userManager, citizenUser, "Password123", "Citizen");
