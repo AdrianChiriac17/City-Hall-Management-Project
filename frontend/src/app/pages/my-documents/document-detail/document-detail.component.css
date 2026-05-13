@@ -1,0 +1,239 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
+
+/* ===== PAGE ===== */
+.detail-page {
+  min-height: 100vh;
+  background: #f5f7fa;
+}
+
+/* ===== HEADER ===== */
+.page-header {
+  background: linear-gradient(135deg, #0f2035 0%, #1b3a5c 100%);
+  padding: 1.8rem 2rem;
+}
+
+.page-header-content {
+  max-width: 680px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.back-link {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #7a9dc0;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.back-link:hover {
+  color: #ffffff;
+}
+
+.page-title {
+  font-family: 'Manrope', sans-serif;
+  font-size: 1.55rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+}
+
+/* ===== CONTENT ===== */
+.detail-content {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+/* ===== CARD ===== */
+.detail-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 24px rgba(30, 50, 80, 0.07);
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
+
+.detail-card--skeleton {
+  height: 340px;
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+/* ===== CARD HEADER ===== */
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.doc-title {
+  font-family: 'Manrope', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1a2a3a;
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+  word-break: break-word;
+}
+
+/* ===== STATUS BADGE ===== */
+.status-badge {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  height: 26px;
+  padding: 0 0.75rem;
+  border-radius: 999px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.status-badge--pending  { background: #f59e0b; }
+.status-badge--approved { background: #00c6a2; }
+.status-badge--rejected { background: #e74c3c; }
+
+/* ===== NOTICE ===== */
+.notice {
+  border-radius: 10px;
+  padding: 0.85rem 1.1rem;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.notice--error {
+  background: #fdf0ef;
+  color: #c0392b;
+}
+
+/* ===== DESCRIPTION ===== */
+.doc-description {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.9rem;
+  color: #4a5568;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ===== INFO GRID ===== */
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem 1.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #edf0f5;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.info-label {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8a9bb0;
+}
+
+.info-value {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: #1a2a3a;
+  word-break: break-word;
+}
+
+/* ===== ACTIONS ===== */
+.card-actions {
+  display: flex;
+  gap: 0.85rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #edf0f5;
+  flex-wrap: wrap;
+}
+
+.download-btn {
+  display: inline-flex;
+  align-items: center;
+  height: 44px;
+  padding: 0 1.8rem;
+  background: linear-gradient(90deg, #00c6a2, #00a688);
+  color: #fff;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  border-radius: 999px;
+  text-decoration: none;
+  transition: opacity 0.2s, transform 0.18s;
+}
+
+.download-btn:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+
+.delete-btn {
+  height: 44px;
+  padding: 0 1.8rem;
+  background: #e74c3c;
+  color: #fff;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.18s;
+}
+
+.delete-btn:hover:not(:disabled) {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}
+
+.delete-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ===== SKELETON ===== */
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.45; }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 600px) {
+  .detail-content {
+    padding: 1.2rem 1rem 3rem;
+  }
+
+  .detail-card {
+    padding: 1.4rem;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .card-header {
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+}

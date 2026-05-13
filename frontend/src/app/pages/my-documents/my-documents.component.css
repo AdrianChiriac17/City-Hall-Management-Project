@@ -1,0 +1,225 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
+
+/* ===== PAGE ===== */
+.docs-page {
+  min-height: 100vh;
+  background: #f5f7fa;
+}
+
+/* ===== HEADER ===== */
+.page-header {
+  background: linear-gradient(135deg, #0f2035 0%, #1b3a5c 100%);
+  padding: 2.2rem 2rem;
+}
+
+.page-header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.page-title {
+  font-family: 'Manrope', sans-serif;
+  font-size: 1.65rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 0.3rem;
+}
+
+.page-subtitle {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.88rem;
+  color: #7a9dc0;
+  margin: 0;
+}
+
+.upload-btn {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  height: 42px;
+  padding: 0 1.5rem;
+  background: linear-gradient(90deg, #00c6a2, #00a688);
+  color: #fff;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  border-radius: 999px;
+  text-decoration: none;
+  transition: opacity 0.2s, transform 0.18s;
+}
+
+.upload-btn:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+
+/* ===== CONTENT ===== */
+.docs-content {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+/* ===== DOCUMENT LIST ===== */
+.doc-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+/* ===== DOCUMENT CARD ===== */
+.doc-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 1.2rem 1.4rem;
+  box-shadow: 0 2px 12px rgba(30, 50, 80, 0.07);
+  cursor: pointer;
+  transition: box-shadow 0.18s, transform 0.18s;
+}
+
+.doc-card:hover {
+  box-shadow: 0 6px 24px rgba(30, 50, 80, 0.12);
+  transform: translateY(-1px);
+}
+
+.doc-card--skeleton {
+  height: 76px;
+  cursor: default;
+  transform: none;
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+.doc-card--skeleton:hover {
+  box-shadow: 0 2px 12px rgba(30, 50, 80, 0.07);
+  transform: none;
+}
+
+.doc-main {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.doc-icon {
+  font-size: 1.6rem;
+  flex-shrink: 0;
+}
+
+.doc-body {
+  min-width: 0;
+}
+
+.doc-title {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1a2a3a;
+  margin: 0 0 0.2rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.doc-meta {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.78rem;
+  color: #8a9bb0;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ===== STATUS BADGE ===== */
+.status-badge {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  height: 26px;
+  padding: 0 0.75rem;
+  border-radius: 999px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.status-badge--pending  { background: #f59e0b; }
+.status-badge--approved { background: #00c6a2; }
+.status-badge--rejected { background: #e74c3c; }
+
+/* ===== EMPTY STATE ===== */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 4rem 1rem;
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 3rem;
+}
+
+.empty-title {
+  font-family: 'Manrope', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #1a2a3a;
+  margin: 0;
+}
+
+.empty-subtitle {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.9rem;
+  color: #8a9bb0;
+  margin: 0 0 0.5rem;
+}
+
+.error-text {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.92rem;
+  color: #c0392b;
+  background: #fdf0ef;
+  padding: 1rem 1.2rem;
+  border-radius: 10px;
+  margin: 0;
+}
+
+/* ===== SKELETON ===== */
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.45; }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 600px) {
+  .page-header-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .page-title {
+    font-size: 1.35rem;
+  }
+
+  .doc-card {
+    padding: 1rem 1.1rem;
+  }
+
+  .docs-content {
+    padding: 1.2rem 1rem 3rem;
+  }
+}

@@ -13,4 +13,5 @@ public class CitizenProfile
 
     public User? User { get; set; }
     public ICollection<Request> Requests { get; set; } = new List<Request>();
+    public ICollection<Document> Documents { get; set; } = new List<Document>();
 }

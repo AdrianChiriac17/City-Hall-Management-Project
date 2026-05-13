@@ -1,0 +1,86 @@
+<div class="detail-page">
+
+  <div class="page-header">
+    <div class="page-header-content">
+      <a routerLink="/my-documents" class="back-link">← My Documents</a>
+      <h1 class="page-title">Document Detail</h1>
+    </div>
+  </div>
+
+  <div class="detail-content">
+
+    @if (isLoading) {
+      <div class="detail-card detail-card--skeleton"></div>
+
+    } @else if (error) {
+      <div class="notice notice--error">{{ error }}</div>
+
+    } @else if (document) {
+      <div class="detail-card">
+
+        <!-- Title + status -->
+        <div class="card-header">
+          <h2 class="doc-title">{{ document.title }}</h2>
+          <span class="status-badge status-badge--{{ document.approvalStatus.toLowerCase() }}">
+            {{ document.approvalStatus }}
+          </span>
+        </div>
+
+        <!-- Rejection notice -->
+        @if (document.approvalStatus === 'Rejected' && document.rejectionReason) {
+          <div class="notice notice--error">
+            <strong>Rejected:</strong> {{ document.rejectionReason }}
+          </div>
+        }
+
+        <!-- Description -->
+        @if (document.description) {
+          <p class="doc-description">{{ document.description }}</p>
+        }
+
+        <!-- File info -->
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">File Name</span>
+            <span class="info-value">{{ document.originalFileName }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">File Size</span>
+            <span class="info-value">{{ formatFileSize(document.fileSizeBytes) }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Uploaded</span>
+            <span class="info-value">{{ document.uploadedAt | date:'MMMM d, yyyy' }}</span>
+          </div>
+          @if (document.reviewedAt) {
+            <div class="info-item">
+              <span class="info-label">Reviewed</span>
+              <span class="info-value">
+                {{ document.reviewedAt | date:'MMMM d, yyyy' }}
+                @if (document.reviewedByName) { by {{ document.reviewedByName }} }
+              </span>
+            </div>
+          }
+        </div>
+
+        <!-- Actions -->
+        <div class="card-actions">
+          @if (document.approvalStatus === 'Approved') {
+            <a [href]="document.url" target="_blank" rel="noopener noreferrer" class="download-btn">
+              Download
+            </a>
+          }
+
+          @if (document.approvalStatus === 'Pending' || document.approvalStatus === 'Rejected') {
+            <button type="button" class="delete-btn"
+              [disabled]="isDeleting" (click)="deleteDocument()">
+              {{ isDeleting ? 'Deleting…' : 'Delete Document' }}
+            </button>
+          }
+        </div>
+
+      </div>
+    }
+
+  </div>
+</div>

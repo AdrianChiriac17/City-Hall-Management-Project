@@ -328,6 +328,31 @@
   cursor: not-allowed;
 }
 
+/* ===== QUICK ACTIONS ===== */
+.quick-actions {
+  margin-top: 1.5rem;
+}
+
+.quick-action-btn {
+  display: inline-flex;
+  align-items: center;
+  height: 46px;
+  padding: 0 2rem;
+  background: linear-gradient(90deg, #00c6a2, #00a688);
+  color: #fff;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.93rem;
+  font-weight: 700;
+  border-radius: 999px;
+  text-decoration: none;
+  transition: opacity 0.2s, transform 0.18s;
+}
+
+.quick-action-btn:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+
 /* ===== SKELETON ANIMATION ===== */
 @keyframes skeleton-pulse {
   0%, 100% { opacity: 1; }
