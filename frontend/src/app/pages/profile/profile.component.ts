@@ -1,9 +1,10 @@
 import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 import { ProfileService, UserProfile } from '../../services/profile.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-profile',
@@ -15,6 +16,7 @@ import { ProfileService, UserProfile } from '../../services/profile.service';
 export class ProfileComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly profileService = inject(ProfileService);
+  private readonly authService = inject(AuthService);
   private readonly cdr = inject(ChangeDetectorRef);
 
   profile: UserProfile | null = null;
@@ -23,6 +25,10 @@ export class ProfileComponent implements OnInit {
   saveMessage = '';
   isSaveSuccess = false;
   loadError = '';
+
+  isChangingPassword = false;
+  passwordMessage = '';
+  isPasswordSuccess = false;
 
   readonly countryCodes = [
     { dial: '+40', name: 'Romania' },
@@ -131,6 +137,12 @@ export class ProfileComponent implements OnInit {
     country: ['Romania', [Validators.required]]
   });
 
+  passwordForm = this.fb.group({
+    currentPassword: ['', [Validators.required]],
+    newPassword: ['', [Validators.required, Validators.minLength(8)]],
+    confirmNewPassword: ['', [Validators.required]]
+  }, { validators: ProfileComponent.passwordsMatchValidator });
+
   ngOnInit(): void {
     this.profileService.getProfile().pipe(
       finalize(() => {
@@ -155,6 +167,12 @@ export class ProfileComponent implements OnInit {
         this.cdr.detectChanges();
       }
     });
+  }
+
+  static passwordsMatchValidator(group: AbstractControl): ValidationErrors | null {
+    const newPw = group.get('newPassword')?.value;
+    const confirm = group.get('confirmNewPassword')?.value;
+    return newPw === confirm ? null : { passwordsMismatch: true };
   }
 
   get initials(): string {
@@ -212,6 +230,45 @@ export class ProfileComponent implements OnInit {
       error: err => {
         this.isSaveSuccess = false;
         this.saveMessage = err.error?.message || 'Failed to save changes. Please try again.';
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  changePassword(): void {
+    this.passwordMessage = '';
+    this.isPasswordSuccess = false;
+
+    if (this.passwordForm.invalid) {
+      this.passwordForm.markAllAsTouched();
+      this.passwordMessage = this.passwordForm.hasError('passwordsMismatch')
+        ? 'New password and confirmation do not match.'
+        : 'Please fix the errors before saving.';
+      return;
+    }
+
+    const v = this.passwordForm.getRawValue();
+    this.isChangingPassword = true;
+
+    this.authService.changePassword({
+      currentPassword: v.currentPassword ?? '',
+      newPassword: v.newPassword ?? '',
+      confirmNewPassword: v.confirmNewPassword ?? ''
+    }).pipe(
+      finalize(() => {
+        this.isChangingPassword = false;
+        this.cdr.detectChanges();
+      })
+    ).subscribe({
+      next: response => {
+        this.isPasswordSuccess = true;
+        this.passwordMessage = response.message;
+        this.passwordForm.reset();
+        this.cdr.detectChanges();
+      },
+      error: err => {
+        this.isPasswordSuccess = false;
+        this.passwordMessage = err.error?.message || 'Failed to change password. Please try again.';
         this.cdr.detectChanges();
       }
     });

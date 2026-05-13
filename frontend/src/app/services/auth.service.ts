@@ -23,6 +23,12 @@ export interface LoginRequest {
   rememberMe: boolean;
 }
 
+export interface ChangePasswordRequest {
+  currentPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
+}
+
 export interface AuthResponse {
   success: boolean;
   message: string;
@@ -78,6 +84,12 @@ export class AuthService {
     }).pipe(
       tap(() => this.currentUserSubject.next(null))
     );
+  }
+
+  changePassword(request: ChangePasswordRequest): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/change-password`, request, {
+      withCredentials: true
+    });
   }
 
   clearCurrentUser(): void {

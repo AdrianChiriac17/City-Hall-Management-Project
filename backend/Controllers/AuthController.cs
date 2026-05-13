@@ -179,6 +179,35 @@ public class AuthController(
     }
 
     [Authorize]
+    [HttpPost("change-password")]
+    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto dto)
+    {
+        var user = await userManager.GetUserAsync(User);
+        if (user is null) return Unauthorized();
+
+        var result = await userManager.ChangePasswordAsync(user, dto.CurrentPassword, dto.NewPassword);
+        if (!result.Succeeded)
+        {
+            logger.LogWarning("Change password failed for user {UserId}: {Errors}", user.Id, FormatErrors(result));
+            return BadRequest(new AuthResponseDto
+            {
+                Success = false,
+                Message = FormatErrors(result)
+            });
+        }
+
+        user.UpdatedAt = DateTime.UtcNow;
+        await userManager.UpdateAsync(user);
+        logger.LogInformation("Password changed successfully for user {UserId}", user.Id);
+
+        return Ok(new AuthResponseDto
+        {
+            Success = true,
+            Message = "Password changed successfully."
+        });
+    }
+
+    [Authorize]
     [HttpGet("me")]
     public async Task<IActionResult> Me()
     {
