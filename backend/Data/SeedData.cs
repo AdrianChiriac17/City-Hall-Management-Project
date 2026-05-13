@@ -21,7 +21,8 @@ public static class SeedData
         // Always seed the admin account if it doesn't exist yet
         var now = DateTime.UtcNow;
 
-        if (await userManager.FindByEmailAsync("admin@demo.local") is null)
+        var existingAdmin = await userManager.FindByEmailAsync("admin@demo.local");
+        if (existingAdmin is null)
         {
             var adminUser = new User
             {
@@ -34,6 +35,22 @@ public static class SeedData
                 UpdatedAt = now
             };
             await CreateUserAsync(userManager, adminUser, "Admin123!", "System Administrator");
+            existingAdmin = adminUser;
+        }
+
+        if (!await dbContext.CitizenProfiles.AnyAsync(cp => cp.UserId == existingAdmin.Id))
+        {
+            dbContext.CitizenProfiles.Add(new CitizenProfile
+            {
+                UserId = existingAdmin.Id,
+                PhoneCountryCode = "+40",
+                PhoneNumber = "000 000 000",
+                Street = "Strada Primăriei nr. 1",
+                City = "Craiova",
+                PostalCode = "200000",
+                Country = "Romania"
+            });
+            await dbContext.SaveChangesAsync();
         }
 
         if (await dbContext.Users.CountAsync() > 1)

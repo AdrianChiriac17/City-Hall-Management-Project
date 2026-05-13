@@ -25,6 +25,18 @@ public class CityHallDbContext(DbContextOptions<CityHallDbContext> options) : Id
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<Document>()
+            .HasOne(d => d.CitizenProfile)
+            .WithMany(c => c.Documents)
+            .HasForeignKey(d => d.CitizenProfileId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Document>()
+            .HasOne(d => d.ReviewedByUser)
+            .WithMany()
+            .HasForeignKey(d => d.ReviewedByUserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
         modelBuilder.Entity<RequestDocument>()
             .HasKey(rd => new { rd.RequestId, rd.DocumentId });
 
