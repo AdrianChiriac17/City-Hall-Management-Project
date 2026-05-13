@@ -1,0 +1,88 @@
+<div class="create-page">
+
+  <div class="page-header">
+    <div class="page-header-content">
+      <a routerLink="/forum" class="back-link">← Back to Forum</a>
+      <h1 class="page-title">New Thread</h1>
+    </div>
+  </div>
+
+  <div class="create-content">
+    <div class="create-card">
+
+      <form [formGroup]="form" (ngSubmit)="submit()">
+
+        <!-- Title -->
+        <div class="field-wrap">
+          <label class="field-label" for="thread-title">
+            Title <span class="required">*</span>
+          </label>
+          <div class="field-row">
+            <input id="thread-title" type="text" formControlName="title"
+              class="field-input" placeholder="What do you want to discuss?" maxlength="200"/>
+          </div>
+          <span class="char-hint">{{ form.controls.title.value?.length ?? 0 }} / 200</span>
+        </div>
+
+        <!-- Content -->
+        <div class="field-wrap">
+          <label class="field-label" for="thread-content">
+            Content <span class="required">*</span>
+          </label>
+          <textarea id="thread-content" formControlName="content"
+            class="content-textarea" placeholder="Write your message here..." maxlength="10000"
+            rows="10"></textarea>
+          <span class="char-hint">{{ charCount }} / 10000</span>
+        </div>
+
+        <!-- Image attachments -->
+        <div class="upload-section">
+          <p class="section-label">Images (optional)</p>
+          <div class="upload-row">
+            <input type="file" id="thread-files" accept="image/jpeg,image/png,image/gif,image/webp"
+              multiple hidden (change)="onFilesSelected($event)" #fileInput>
+            <button type="button" class="upload-trigger" (click)="fileInput.click()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="17 8 12 3 7 8"/>
+                <line x1="12" y1="3" x2="12" y2="15"/>
+              </svg>
+              Attach Images
+            </button>
+            <span class="upload-hint">JPEG · PNG · GIF · WebP · max 5 MB each</span>
+          </div>
+
+          @if (fileError) {
+            <p class="file-error">{{ fileError }}</p>
+          }
+
+          @if (selectedFiles.length > 0) {
+            <div class="file-list">
+              @for (f of selectedFiles; track f.name; let i = $index) {
+                <div class="file-item">
+                  <span class="file-name">{{ f.name }}</span>
+                  <span class="file-size">{{ formatFileSize(f.size) }}</span>
+                  <button type="button" class="file-remove" (click)="removeFile(i)"
+                    aria-label="Remove file">×</button>
+                </div>
+              }
+            </div>
+          }
+        </div>
+
+        @if (message) {
+          <p class="form-message" [class.success]="isSuccess">{{ message }}</p>
+        }
+
+        <div class="form-actions">
+          <a routerLink="/forum" class="cancel-link">Cancel</a>
+          <button type="submit" class="submit-btn" [disabled]="isSubmitting">
+            {{ isSubmitting ? 'Posting…' : 'Post Thread' }}
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+</div>

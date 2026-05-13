@@ -3,6 +3,9 @@ import { HomeComponent } from './pages/home/home.component';
 import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/register/register.component';
 import { ProfileComponent } from './pages/profile/profile.component';
+import { ForumComponent } from './pages/forum/forum.component';
+import { CreateThreadComponent } from './pages/forum/create-thread/create-thread.component';
+import { ThreadDetailComponent } from './pages/forum/thread-detail/thread-detail.component';
 import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
@@ -25,6 +28,21 @@ export const routes: Routes = [
   {
     path: 'profile',
     component: ProfileComponent,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'forum',
+    component: ForumComponent,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'forum/new',
+    component: CreateThreadComponent,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'forum/thread/:id',
+    component: ThreadDetailComponent,
     canActivate: [authGuard]
   },
 

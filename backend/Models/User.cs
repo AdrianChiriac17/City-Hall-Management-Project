@@ -13,4 +13,6 @@ public class User : IdentityUser<Guid>
     public EmployeeProfile? EmployeeProfile { get; set; }
 
     public ICollection<RequestHistory> RequestHistoryEntries { get; set; } = new List<RequestHistory>();
+    public ICollection<ForumThread> ForumThreads { get; set; } = new List<ForumThread>();
+    public ICollection<ForumPost> ForumPosts { get; set; } = new List<ForumPost>();
 }

@@ -1,0 +1,80 @@
+<div class="forum-page">
+
+  <!-- Page header -->
+  <div class="page-header">
+    <div class="page-header-content">
+      <div class="page-header-text">
+        <h1 class="page-title">Community Forum</h1>
+        <p class="page-subtitle">Discuss topics, ask questions, and connect with the community.</p>
+      </div>
+      <a routerLink="/forum/new" class="new-thread-btn">+ New Thread</a>
+    </div>
+  </div>
+
+  <!-- Thread list -->
+  <div class="forum-content">
+
+    @if (isLoading) {
+      <div class="thread-list">
+        @for (i of [1,2,3,4,5]; track i) {
+          <div class="thread-card thread-card--skeleton"></div>
+        }
+      </div>
+
+    } @else if (error) {
+      <div class="empty-state">
+        <p class="error-text">{{ error }}</p>
+        <button class="retry-btn" (click)="loadThreads()">Try again</button>
+      </div>
+
+    } @else if (!result || result.items.length === 0) {
+      <div class="empty-state">
+        <div class="empty-icon" aria-hidden="true">💬</div>
+        <h2 class="empty-title">No threads yet</h2>
+        <p class="empty-subtitle">Be the first to start a discussion.</p>
+        <a routerLink="/forum/new" class="new-thread-btn">+ New Thread</a>
+      </div>
+
+    } @else {
+      <div class="thread-list">
+        @for (thread of result.items; track thread.id) {
+          <div class="thread-card" (click)="openThread(thread.id)" role="button" tabindex="0"
+            (keydown.enter)="openThread(thread.id)">
+            <div class="thread-main">
+              <div class="thread-status-dot"
+                [class.thread-status-dot--closed]="thread.isClosed"
+                aria-hidden="true"></div>
+              <div class="thread-body">
+                <h2 class="thread-title">{{ thread.title }}</h2>
+                <p class="thread-meta">
+                  by <span class="thread-author">{{ thread.authorName }}</span>
+                  &nbsp;·&nbsp;
+                  {{ thread.createdAt | date:'MMM d, yyyy' }}
+                  @if (thread.isClosed) {
+                    &nbsp;·&nbsp;<span class="closed-badge">Closed</span>
+                  }
+                </p>
+              </div>
+            </div>
+            <div class="thread-replies">
+              <span class="reply-count">{{ thread.replyCount }}</span>
+              <span class="reply-label">{{ thread.replyCount === 1 ? 'reply' : 'replies' }}</span>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Pagination -->
+      @if (result.totalPages > 1) {
+        <div class="pagination">
+          <button class="page-btn" [disabled]="!result.hasPreviousPage"
+            (click)="changePage(page - 1)">← Previous</button>
+          <span class="page-info">Page {{ result.page }} of {{ result.totalPages }}</span>
+          <button class="page-btn" [disabled]="!result.hasNextPage"
+            (click)="changePage(page + 1)">Next →</button>
+        </div>
+      }
+    }
+
+  </div>
+</div>

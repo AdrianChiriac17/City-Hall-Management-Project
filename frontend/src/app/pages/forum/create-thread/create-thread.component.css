@@ -1,0 +1,324 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
+
+.create-page {
+  min-height: 100vh;
+  background: #f5f7fa;
+}
+
+/* ===== PAGE HEADER ===== */
+.page-header {
+  background: linear-gradient(135deg, #0f2035 0%, #1b3a5c 100%);
+  padding: 2.2rem 2rem;
+}
+
+.page-header-content {
+  max-width: 760px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 1.4rem;
+}
+
+.back-link {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #7a9dc0;
+  text-decoration: none;
+  flex-shrink: 0;
+  transition: color 0.18s;
+}
+
+.back-link:hover {
+  color: #fff;
+}
+
+.page-title {
+  font-family: 'Manrope', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+}
+
+/* ===== CONTENT ===== */
+.create-content {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+.create-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 2rem 2.2rem;
+  box-shadow: 0 2px 16px rgba(30, 50, 80, 0.08);
+}
+
+/* ===== FIELDS ===== */
+.field-wrap {
+  margin-bottom: 1.4rem;
+}
+
+.field-label {
+  display: block;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #1a2a3a;
+  margin-bottom: 0.45rem;
+}
+
+.required {
+  color: #e74c3c;
+  margin-left: 0.15rem;
+}
+
+.field-row {
+  display: flex;
+}
+
+.field-input {
+  width: 100%;
+  padding: 0.65rem 0.9rem;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.95rem;
+  color: #1a2a3a;
+  background: #f9fafb;
+  border: 1.5px solid #dce4ee;
+  border-radius: 10px;
+  outline: none;
+  transition: border-color 0.18s, box-shadow 0.18s;
+  box-sizing: border-box;
+}
+
+.field-input:focus {
+  border-color: #3a7abf;
+  box-shadow: 0 0 0 3px rgba(58, 122, 191, 0.12);
+  background: #fff;
+}
+
+.content-textarea {
+  width: 100%;
+  padding: 0.75rem 0.9rem;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.95rem;
+  color: #1a2a3a;
+  background: #f9fafb;
+  border: 1.5px solid #dce4ee;
+  border-radius: 10px;
+  outline: none;
+  resize: vertical;
+  transition: border-color 0.18s, box-shadow 0.18s;
+  box-sizing: border-box;
+  line-height: 1.6;
+}
+
+.content-textarea:focus {
+  border-color: #3a7abf;
+  box-shadow: 0 0 0 3px rgba(58, 122, 191, 0.12);
+  background: #fff;
+}
+
+.char-hint {
+  display: block;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.76rem;
+  color: #aab5c5;
+  margin-top: 0.3rem;
+  text-align: right;
+}
+
+/* ===== UPLOAD SECTION ===== */
+.upload-section {
+  margin-bottom: 1.6rem;
+}
+
+.section-label {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #1a2a3a;
+  margin: 0 0 0.55rem;
+}
+
+.upload-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.upload-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #f0f4fa;
+  border: 1.5px dashed #b0c4da;
+  border-radius: 10px;
+  padding: 0.6rem 1.1rem;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: #3a7abf;
+  cursor: pointer;
+  transition: background 0.18s, border-color 0.18s;
+}
+
+.upload-trigger svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.upload-trigger:hover {
+  background: #e4edf8;
+  border-color: #3a7abf;
+}
+
+.upload-hint {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.78rem;
+  color: #aab5c5;
+}
+
+.file-error {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.84rem;
+  color: #c0392b;
+  margin: 0.5rem 0 0;
+}
+
+.file-list {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.file-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: #f5f8fc;
+  border: 1px solid #dce4ee;
+  border-radius: 8px;
+  padding: 0.45rem 0.75rem;
+}
+
+.file-name {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.85rem;
+  color: #1a2a3a;
+  font-weight: 600;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.file-size {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.78rem;
+  color: #8a9bb0;
+  flex-shrink: 0;
+}
+
+.file-remove {
+  background: none;
+  border: none;
+  color: #c0392b;
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 0.2rem;
+  flex-shrink: 0;
+  opacity: 0.7;
+  transition: opacity 0.15s;
+}
+
+.file-remove:hover {
+  opacity: 1;
+}
+
+/* ===== MESSAGES ===== */
+.form-message {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.88rem;
+  color: #c0392b;
+  background: #fdf0ee;
+  border: 1px solid #f5c2bc;
+  border-radius: 8px;
+  padding: 0.6rem 0.9rem;
+  margin-bottom: 1.2rem;
+}
+
+.form-message.success {
+  color: #1a7a4a;
+  background: #eaf7f0;
+  border-color: #a8dfc0;
+}
+
+/* ===== FORM ACTIONS ===== */
+.form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid #eef1f6;
+}
+
+.cancel-link {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #8a9bb0;
+  text-decoration: none;
+  transition: color 0.18s;
+}
+
+.cancel-link:hover {
+  color: #1a2a3a;
+}
+
+.submit-btn {
+  background: linear-gradient(90deg, #00c6a2, #00a688);
+  color: #fff;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 999px;
+  padding: 0.7rem 1.8rem;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.18s;
+}
+
+.submit-btn:hover:not(:disabled) {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+
+.submit-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 600px) {
+  .create-content {
+    padding: 1.2rem 1rem 3rem;
+  }
+
+  .create-card {
+    padding: 1.4rem 1.1rem;
+  }
+
+  .upload-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
