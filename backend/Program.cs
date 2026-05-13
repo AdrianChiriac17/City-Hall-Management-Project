@@ -79,11 +79,9 @@ using (var scope = app.Services.CreateScope())
     await SeedData.InitializeAsync(dbContext, roleManager, userManager);
 }
 
-// Ensure the forum upload directory exists
-var forumUploadsDir = Path.Combine(
-    app.Environment.WebRootPath ?? Path.Combine(app.Environment.ContentRootPath, "wwwroot"),
-    "uploads", "forum");
-Directory.CreateDirectory(forumUploadsDir);
+var webRoot = app.Environment.WebRootPath ?? Path.Combine(app.Environment.ContentRootPath, "wwwroot");
+Directory.CreateDirectory(Path.Combine(webRoot, "uploads", "forum"));
+Directory.CreateDirectory(Path.Combine(webRoot, "uploads", "documents"));
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
