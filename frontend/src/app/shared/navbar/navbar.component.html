@@ -45,6 +45,22 @@
         (click)="closeMenu()"
       >Profile</a>
 
+      @if (isCitizen) {
+        <a
+          routerLink="/my-requests"
+          routerLinkActive="active"
+          (click)="closeMenu()"
+        >My Requests</a>
+      }
+
+      @if (isStaff) {
+        <a
+          routerLink="/requests"
+          routerLinkActive="active"
+          (click)="closeMenu()"
+        >Requests</a>
+      }
+
       @if (isAdmin) {
         <a
           routerLink="/admin"

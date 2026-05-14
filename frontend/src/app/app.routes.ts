@@ -12,6 +12,8 @@ import { UploadDocumentComponent } from './pages/my-documents/upload-document/up
 import { DocumentDetailComponent } from './pages/my-documents/document-detail/document-detail.component';
 import { DocumentApprovalComponent } from './pages/admin/document-approval/document-approval.component';
 import { DocumentReviewComponent } from './pages/admin/document-review/document-review.component';
+import { MyRequestsComponent } from './pages/my-requests/my-requests.component';
+import { RequestsComponent } from './pages/requests/requests.component';
 import { authGuard } from './guards/auth.guard';
 import { roleGuard } from './guards/role.guard';
 
@@ -81,6 +83,16 @@ export const routes: Routes = [
     path: 'admin/documents-approval/:id',
     component: DocumentReviewComponent,
     canActivate: [roleGuard(['System Administrator'])]
+  },
+  {
+    path: 'my-requests',
+    component: MyRequestsComponent,
+    canActivate: [roleGuard(['Citizen'])]
+  },
+  {
+    path: 'requests',
+    component: RequestsComponent,
+    canActivate: [roleGuard(['Employee', 'Department Manager', 'System Administrator'])]
   },
 
   // Placeholder routes pentru paginile informative.

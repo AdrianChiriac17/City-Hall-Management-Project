@@ -22,6 +22,15 @@ export class NavbarComponent {
     return this.currentUser()?.roles?.includes('System Administrator') ?? false;
   }
 
+  get isCitizen(): boolean {
+    return this.currentUser()?.roles?.includes('Citizen') ?? false;
+  }
+
+  get isStaff(): boolean {
+    const roles = this.currentUser()?.roles ?? [];
+    return roles.some(r => ['Employee', 'Department Manager', 'System Administrator'].includes(r));
+  }
+
   constructor() {
     afterNextRender(() => {
       this.authService.loadCurrentUser().subscribe({
