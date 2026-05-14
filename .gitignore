@@ -75,3 +75,42 @@ Thumbs.db
 # =========================
 backend/TestResults/
 *.log
+
+# =========================
+# AI Coding Agents & Tools
+# =========================
+
+# Claude (Anthropic)
+.claude/
+CLAUDE.md
+
+# OpenAI Codex / ChatGPT
+AGENTS.md
+.codex/
+
+# Cursor AI
+.cursor/
+.cursorrules
+.cursorignore
+
+# Windsurf (Codeium)
+.windsurf/
+.windsurfrules
+
+# Aider
+.aider*
+
+# Continue.dev
+.continue/
+
+# Codeium
+.codeium/
+
+# Gemini Code Assist (Google)
+.gemini/
+
+# GitHub Copilot
+.github/copilot-instructions.md
+
+# Tabnine
+.tabnine/

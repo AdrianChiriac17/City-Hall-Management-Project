@@ -1,0 +1,123 @@
+<div class="page">
+
+  <div class="page-header">
+    <div class="page-header-content">
+      <div>
+        <h1 class="page-title">Requests</h1>
+        <p class="page-subtitle">Review and manage all citizen requests.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-content">
+
+    @if (isLoading) {
+      <div class="request-list">
+        @for (i of [1,2,3,4]; track i) {
+          <div class="request-card request-card--skeleton"></div>
+        }
+      </div>
+
+    } @else if (error) {
+      <div class="empty-state">
+        <p class="error-text">{{ error }}</p>
+      </div>
+
+    } @else if (requests.length === 0) {
+      <div class="empty-state">
+        <div class="empty-icon" aria-hidden="true">📭</div>
+        <h2 class="empty-title">No requests yet</h2>
+        <p class="empty-subtitle">Citizen requests will appear here once submitted.</p>
+      </div>
+
+    } @else {
+      <div class="request-list">
+        @for (req of requests; track req.id) {
+          <div class="request-card" [class.request-card--open]="expandedId === req.id">
+
+            <button class="card-header" type="button" (click)="toggle(req.id)">
+              <div class="card-header-left">
+                <span class="req-icon" aria-hidden="true">📋</span>
+                <div class="card-info">
+                  <span class="req-title">{{ req.title }}</span>
+                  <span class="req-meta">
+                    {{ citizenName(req) }}
+                    &nbsp;·&nbsp;
+                    {{ req.createdAt | date:'MMM d, yyyy' }}
+                    @if (req.department) {
+                      &nbsp;·&nbsp;{{ req.department.name }}
+                    }
+                  </span>
+                </div>
+              </div>
+              <div class="card-header-right">
+                <span class="status-badge {{ statusClass(req.status) }}">{{ req.status }}</span>
+                <span class="chevron" [class.chevron--open]="expandedId === req.id">&#8250;</span>
+              </div>
+            </button>
+
+            @if (expandedId === req.id) {
+              <div class="card-detail">
+                <p class="detail-desc">{{ req.description }}</p>
+
+                @if (req.history && req.history.length > 0) {
+                  <div class="history-section">
+                    <h3 class="section-label">History</h3>
+                    <div class="history-list">
+                      @for (entry of req.history; track entry.id) {
+                        <div class="history-entry">
+                          <span class="history-dot"></span>
+                          <div>
+                            <span class="history-status">{{ entry.status }}</span>
+                            @if (entry.note) {
+                              <span class="history-note"> — {{ entry.note }}</span>
+                            }
+                            <span class="history-date">{{ entry.changedAt | date:'MMM d, yyyy, h:mm a' }}</span>
+                          </div>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                }
+
+                <div class="update-section">
+                  <h3 class="section-label">Update Status</h3>
+
+                  @if (updateError[req.id]) {
+                    <p class="error-text">{{ updateError[req.id] }}</p>
+                  }
+
+                  <div class="update-form">
+                    <select class="select" [(ngModel)]="selectedStatus[req.id]">
+                      @for (opt of statusOptions; track opt) {
+                        <option [value]="opt">{{ opt }}</option>
+                      }
+                    </select>
+
+                    <input
+                      class="note-input"
+                      type="text"
+                      placeholder="Optional note…"
+                      [(ngModel)]="selectedNote[req.id]"
+                    />
+
+                    <button
+                      class="update-btn"
+                      type="button"
+                      (click)="updateStatus(req)"
+                      [disabled]="updating[req.id]"
+                    >
+                      {{ updating[req.id] ? 'Saving…' : 'Save' }}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            }
+
+          </div>
+        }
+      </div>
+    }
+
+  </div>
+</div>

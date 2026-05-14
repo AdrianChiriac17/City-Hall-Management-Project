@@ -1,0 +1,102 @@
+<div class="page">
+
+  <div class="page-header">
+    <div class="page-header-content">
+      <div class="page-header-text">
+        <h1 class="page-title">My Requests</h1>
+        <p class="page-subtitle">Submit and track your requests to the City Hall.</p>
+      </div>
+      <button class="action-btn" type="button" (click)="toggleForm()">
+        {{ showForm ? 'Cancel' : '+ New Request' }}
+      </button>
+    </div>
+  </div>
+
+  <div class="page-content">
+
+    @if (showForm) {
+      <div class="form-card">
+        <h2 class="form-title">New Request</h2>
+
+        @if (submitError) {
+          <p class="error-text">{{ submitError }}</p>
+        }
+
+        <div class="field">
+          <label class="label" for="req-title">Title</label>
+          <input
+            id="req-title"
+            class="input"
+            type="text"
+            placeholder="Brief title of your request"
+            [(ngModel)]="title"
+            maxlength="200"
+          />
+        </div>
+
+        <div class="field">
+          <label class="label" for="req-desc">Description</label>
+          <textarea
+            id="req-desc"
+            class="textarea"
+            placeholder="Describe your request in detail..."
+            [(ngModel)]="description"
+            rows="5"
+          ></textarea>
+        </div>
+
+        <button class="submit-btn" type="button" (click)="submit()" [disabled]="submitting">
+          {{ submitting ? 'Submitting…' : 'Submit Request' }}
+        </button>
+      </div>
+    }
+
+    @if (submitSuccess) {
+      <div class="success-banner">Request submitted successfully.</div>
+    }
+
+    @if (isLoading) {
+      <div class="request-list">
+        @for (i of [1,2,3]; track i) {
+          <div class="request-card request-card--skeleton"></div>
+        }
+      </div>
+
+    } @else if (error) {
+      <div class="empty-state">
+        <p class="error-text">{{ error }}</p>
+      </div>
+
+    } @else if (requests.length === 0) {
+      <div class="empty-state">
+        <div class="empty-icon" aria-hidden="true">📋</div>
+        <h2 class="empty-title">No requests yet</h2>
+        <p class="empty-subtitle">Submit your first request to the City Hall.</p>
+        <button class="action-btn" type="button" (click)="toggleForm()">+ New Request</button>
+      </div>
+
+    } @else {
+      <div class="request-list">
+        @for (req of requests; track req.id) {
+          <div class="request-card">
+            <div class="request-main">
+              <div class="request-icon" aria-hidden="true">📋</div>
+              <div class="request-body">
+                <h2 class="request-title">{{ req.title }}</h2>
+                <p class="request-meta">
+                  {{ req.createdAt | date:'MMM d, yyyy' }}
+                  @if (req.department) {
+                    &nbsp;·&nbsp;{{ req.department.name }}
+                  }
+                </p>
+                <p class="request-desc">{{ req.description }}</p>
+              </div>
+            </div>
+            <span class="status-badge {{ statusClass(req.status) }}">{{ req.status }}</span>
+          </div>
+        }
+      </div>
+    }
+
+  </div>
+</div>
