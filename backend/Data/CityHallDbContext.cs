@@ -20,6 +20,7 @@ public class CityHallDbContext(DbContextOptions<CityHallDbContext> options) : Id
     public DbSet<ForumThread> ForumThreads => Set<ForumThread>();
     public DbSet<ForumPost> ForumPosts => Set<ForumPost>();
     public DbSet<ForumAttachment> ForumAttachments => Set<ForumAttachment>();
+    public DbSet<Announcement> Announcements => Set<Announcement>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -126,5 +127,11 @@ public class CityHallDbContext(DbContextOptions<CityHallDbContext> options) : Id
             .HasForeignKey(a => a.PostId)
             .IsRequired(false)
             .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Announcement>()
+            .HasOne(a => a.Author)
+            .WithMany(u => u.Announcements)
+            .HasForeignKey(a => a.AuthorUserId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

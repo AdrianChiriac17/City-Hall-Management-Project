@@ -33,11 +33,19 @@
 
     <!-- Auth-gated links -->
     @if (currentUser()) {
+      @if (isStaff) {
+        <a
+          routerLink="/dashboard"
+          routerLinkActive="active"
+          (click)="closeMenu()"
+        >Dashboard</a>
+      }
+
       <a
-        routerLink="/dashboard"
+        routerLink="/announcements"
         routerLinkActive="active"
         (click)="closeMenu()"
-      >Dashboard</a>
+      >Announcements</a>
 
       <a
         routerLink="/profile"

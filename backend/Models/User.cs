@@ -15,4 +15,5 @@ public class User : IdentityUser<Guid>
     public ICollection<RequestHistory> RequestHistoryEntries { get; set; } = new List<RequestHistory>();
     public ICollection<ForumThread> ForumThreads { get; set; } = new List<ForumThread>();
     public ICollection<ForumPost> ForumPosts { get; set; } = new List<ForumPost>();
+    public ICollection<Announcement> Announcements { get; set; } = new List<Announcement>();
 }

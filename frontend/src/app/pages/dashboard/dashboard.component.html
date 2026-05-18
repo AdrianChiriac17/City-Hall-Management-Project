@@ -1,0 +1,99 @@
+<div class="dash-page">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div class="page-header-content">
+      <div>
+        <h1 class="page-title">Dashboard</h1>
+        <p class="page-subtitle">Overview of the City Hall Management System.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="dash-content">
+
+    <!-- Stats grid -->
+    <section class="stats-section">
+      <h2 class="section-title">Statistics</h2>
+
+      @if (statsLoading) {
+        <div class="stats-grid">
+          @for (i of [1,2,3,4]; track i) {
+            <div class="stat-card stat-card--skeleton"></div>
+          }
+        </div>
+      } @else if (statsError) {
+        <p class="error-text">{{ statsError }}</p>
+      } @else if (stats) {
+        <div class="stats-grid">
+          <div class="stat-card stat-card--blue">
+            <div class="stat-icon">👥</div>
+            <div class="stat-body">
+              <div class="stat-value">{{ stats.citizenCount }}</div>
+              <div class="stat-label">Citizens</div>
+            </div>
+          </div>
+          <div class="stat-card stat-card--green">
+            <div class="stat-icon">📋</div>
+            <div class="stat-body">
+              <div class="stat-value">{{ stats.requestCount }}</div>
+              <div class="stat-label">Requests</div>
+            </div>
+          </div>
+          <div class="stat-card stat-card--teal">
+            <div class="stat-icon">📄</div>
+            <div class="stat-body">
+              <div class="stat-value">{{ stats.documentCount }}</div>
+              <div class="stat-label">Documents</div>
+            </div>
+          </div>
+          <div class="stat-card stat-card--amber">
+            <div class="stat-icon">📢</div>
+            <div class="stat-body">
+              <div class="stat-value">{{ stats.announcementCount }}</div>
+              <div class="stat-label">Announcements</div>
+            </div>
+          </div>
+        </div>
+      }
+    </section>
+
+    <!-- Recent announcements -->
+    <section class="recent-section">
+      <div class="recent-header">
+        <h2 class="section-title">Recent Announcements</h2>
+        <a routerLink="/announcements" class="view-all-link">View all →</a>
+      </div>
+
+      @if (annLoading) {
+        <div class="ann-list">
+          @for (i of [1,2,3]; track i) {
+            <div class="ann-card ann-card--skeleton"></div>
+          }
+        </div>
+      } @else if (annError) {
+        <p class="error-text">{{ annError }}</p>
+      } @else if (recentAnnouncements.length === 0) {
+        <div class="empty-state">
+          <div class="empty-icon" aria-hidden="true">📢</div>
+          <p class="empty-text">No announcements yet.</p>
+        </div>
+      } @else {
+        <div class="ann-list">
+          @for (ann of recentAnnouncements; track ann.id) {
+            <a class="ann-card" [class.ann-card--important]="ann.isImportant" routerLink="/announcements">
+              <div class="ann-left">
+                @if (ann.isImportant) {
+                  <span class="important-badge">Important</span>
+                }
+                <span class="ann-title">{{ ann.title }}</span>
+              </div>
+              <span class="ann-date">{{ ann.createdAt | date:'MMM d, yyyy' }}</span>
+            </a>
+          }
+        </div>
+      }
+    </section>
+
+  </div>
+</div>

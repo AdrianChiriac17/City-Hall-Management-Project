@@ -1,0 +1,163 @@
+<div class="ann-page">
+
+  <!-- Page header -->
+  <div class="page-header">
+    <div class="page-header-content">
+      <div>
+        <h1 class="page-title">Announcements</h1>
+        <p class="page-subtitle">Stay up to date with the latest news and notices.</p>
+      </div>
+      @if (isStaff) {
+        <button class="new-btn" type="button" (click)="toggleForm()">
+          {{ showForm ? '✕ Cancel' : '+ New Announcement' }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- Create form -->
+  @if (showForm) {
+    <div class="form-wrap">
+      <div class="form-card">
+        <h2 class="form-title">New Announcement</h2>
+        @if (formError) {
+          <p class="form-error">{{ formError }}</p>
+        }
+        <label class="form-label">Title</label>
+        <input class="form-input" type="text" placeholder="Announcement title…" [(ngModel)]="newTitle" maxlength="200" />
+        <label class="form-label">Content</label>
+        <textarea class="form-textarea" placeholder="Write the announcement…" [(ngModel)]="newContent" rows="5"></textarea>
+        <label class="checkbox-label">
+          <input type="checkbox" [(ngModel)]="newIsImportant" />
+          Mark as important
+        </label>
+        <div class="form-actions">
+          <button class="submit-btn" type="button" [disabled]="submitting" (click)="submit()">
+            {{ submitting ? 'Publishing…' : 'Publish' }}
+          </button>
+          <button class="cancel-btn" type="button" (click)="toggleForm()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Search + filter bar -->
+  <div class="filter-wrap">
+    <div class="search-bar">
+      <input
+        class="search-input"
+        type="text"
+        placeholder="Search announcements…"
+        [(ngModel)]="searchInput"
+        (keydown.enter)="search()"
+      />
+      <button class="search-btn" type="button" (click)="search()">Search</button>
+      @if (activeSearch) {
+        <button class="clear-btn" type="button" (click)="clearSearch()">✕ Clear</button>
+      }
+    </div>
+    <button class="filter-btn" type="button" [class.filter-btn--active]="importantOnly" (click)="toggleImportant()">
+      {{ importantOnly ? '★ Important only' : '☆ All announcements' }}
+    </button>
+  </div>
+
+  <!-- Announcement list -->
+  <div class="ann-body">
+
+    @if (isLoading) {
+      <div class="ann-list">
+        @for (i of [1,2,3]; track i) {
+          <div class="ann-card ann-card--skeleton"></div>
+        }
+      </div>
+
+    } @else if (error) {
+      <div class="empty-state">
+        <p class="error-text">{{ error }}</p>
+        <button class="retry-btn" (click)="load()">Try again</button>
+      </div>
+
+    } @else if (!result || result.items.length === 0) {
+      <div class="empty-state">
+        <div class="empty-icon" aria-hidden="true">📢</div>
+        @if (activeSearch || importantOnly) {
+          <h2 class="empty-title">No results found</h2>
+          <p class="empty-subtitle">Try adjusting your search or filter.</p>
+          <button class="retry-btn" (click)="clearSearch()">Clear filters</button>
+        } @else {
+          <h2 class="empty-title">No announcements yet</h2>
+          <p class="empty-subtitle">Check back later for news and updates.</p>
+        }
+      </div>
+
+    } @else {
+      <div class="ann-list">
+        @for (ann of result.items; track ann.id) {
+
+          @if (editingId === ann.id) {
+            <!-- Inline edit form -->
+            <div class="ann-card ann-card--editing">
+              @if (editError) {
+                <p class="form-error">{{ editError }}</p>
+              }
+              <label class="form-label">Title</label>
+              <input class="form-input" type="text" [(ngModel)]="editTitle" maxlength="200" />
+              <label class="form-label">Content</label>
+              <textarea class="form-textarea" [(ngModel)]="editContent" rows="5"></textarea>
+              <label class="checkbox-label">
+                <input type="checkbox" [(ngModel)]="editIsImportant" />
+                Mark as important
+              </label>
+              <div class="form-actions">
+                <button class="submit-btn" type="button" [disabled]="editSaving" (click)="saveEdit()">
+                  {{ editSaving ? 'Saving…' : 'Save' }}
+                </button>
+                <button class="cancel-btn" type="button" (click)="cancelEdit()">Cancel</button>
+              </div>
+            </div>
+
+          } @else {
+            <!-- Normal card -->
+            <div class="ann-card" [class.ann-card--important]="ann.isImportant">
+              <div class="ann-header">
+                <div class="ann-title-row">
+                  @if (ann.isImportant) {
+                    <span class="important-badge">Important</span>
+                  }
+                  <h2 class="ann-title">{{ ann.title }}</h2>
+                </div>
+                <div class="ann-actions">
+                  <button class="icon-btn" type="button" title="Copy link" (click)="copyLink(ann.id)">🔗</button>
+                  @if (canEdit(ann)) {
+                    <button class="icon-btn" type="button" title="Edit" (click)="startEdit(ann)">✏️</button>
+                    <button class="icon-btn icon-btn--delete" type="button" title="Delete" (click)="delete(ann.id)">🗑</button>
+                  }
+                </div>
+              </div>
+              <p class="ann-text">{{ ann.content }}</p>
+              <p class="ann-meta">
+                by <strong>{{ ann.authorName }}</strong>
+                &nbsp;·&nbsp;
+                {{ ann.createdAt | date:'MMM d, yyyy' }}
+                @if (ann.updatedAt !== ann.createdAt) {
+                  &nbsp;·&nbsp; <em>edited</em>
+                }
+              </p>
+            </div>
+          }
+        }
+      </div>
+
+      <!-- Pagination -->
+      @if (result.totalPages > 1) {
+        <div class="pagination">
+          <button class="page-btn" [disabled]="!result.hasPreviousPage" (click)="changePage(page - 1)">← Previous</button>
+          <span class="page-info">Page {{ result.page }} of {{ result.totalPages }}</span>
+          <button class="page-btn" [disabled]="!result.hasNextPage" (click)="changePage(page + 1)">Next →</button>
+        </div>
+      }
+    }
+
+  </div><!-- /.ann-body -->
+</div>
+
