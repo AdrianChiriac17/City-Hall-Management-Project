@@ -1,13 +1,14 @@
 import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ForumService, ForumThreadListItem, PagedResult } from '../../services/forum.service';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-forum',
   standalone: true,
-  imports: [RouterLink, DatePipe],
+  imports: [RouterLink, DatePipe, FormsModule],
   templateUrl: './forum.component.html',
   styleUrls: ['./forum.component.css']
 })
@@ -23,7 +24,23 @@ export class ForumComponent implements OnInit {
   page = 1;
   readonly pageSize = 20;
 
+  searchInput = '';
+  activeSearch = '';
+
   ngOnInit(): void {
+    this.loadThreads();
+  }
+
+  search(): void {
+    this.activeSearch = this.searchInput.trim();
+    this.page = 1;
+    this.loadThreads();
+  }
+
+  clearSearch(): void {
+    this.searchInput = '';
+    this.activeSearch = '';
+    this.page = 1;
     this.loadThreads();
   }
 
@@ -31,7 +48,7 @@ export class ForumComponent implements OnInit {
     this.isLoading = true;
     this.error = '';
 
-    this.forumService.getThreads(this.page, this.pageSize).subscribe({
+    this.forumService.getThreads(this.page, this.pageSize, this.activeSearch).subscribe({
       next: result => {
         this.result = result;
         this.isLoading = false;

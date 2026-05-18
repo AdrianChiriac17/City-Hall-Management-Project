@@ -54,6 +54,14 @@ export class RequestService {
     return this.http.post<RequestItem>(`${this.baseUrl}/my`, payload, { withCredentials: true });
   }
 
+  updateMyRequest(id: string, payload: CreateMyRequestPayload): Observable<RequestItem> {
+    return this.http.patch<RequestItem>(`${this.baseUrl}/my/${id}`, payload, { withCredentials: true });
+  }
+
+  cancelMyRequest(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/my/${id}`, { withCredentials: true });
+  }
+
   getAllRequests(): Observable<RequestItem[]> {
     return this.http.get<RequestItem[]>(this.baseUrl, { withCredentials: true });
   }

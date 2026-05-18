@@ -60,11 +60,10 @@ export class ForumService {
 
   constructor(private readonly http: HttpClient) {}
 
-  getThreads(page = 1, pageSize = 20): Observable<PagedResult<ForumThreadListItem>> {
-    return this.http.get<PagedResult<ForumThreadListItem>>(
-      `${this.apiUrl}/threads?page=${page}&pageSize=${pageSize}`,
-      { withCredentials: true }
-    );
+  getThreads(page = 1, pageSize = 20, search = ''): Observable<PagedResult<ForumThreadListItem>> {
+    let url = `${this.apiUrl}/threads?page=${page}&pageSize=${pageSize}`;
+    if (search.trim()) url += `&search=${encodeURIComponent(search.trim())}`;
+    return this.http.get<PagedResult<ForumThreadListItem>>(url, { withCredentials: true });
   }
 
   getThread(id: string): Observable<ForumThreadDetail> {
@@ -106,6 +105,22 @@ export class ForumService {
     return this.http.post<ForumAttachment>(
       `${this.apiUrl}/posts/${postId}/attachments`,
       formData,
+      { withCredentials: true }
+    );
+  }
+
+  updateThread(threadId: string, data: { title: string; content: string }): Observable<ForumThreadDetail> {
+    return this.http.put<ForumThreadDetail>(
+      `${this.apiUrl}/threads/${threadId}`,
+      data,
+      { withCredentials: true }
+    );
+  }
+
+  updatePost(postId: string, data: { content: string }): Observable<ForumPost> {
+    return this.http.put<ForumPost>(
+      `${this.apiUrl}/posts/${postId}`,
+      data,
       { withCredentials: true }
     );
   }

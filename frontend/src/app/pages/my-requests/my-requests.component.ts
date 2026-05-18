@@ -26,6 +26,12 @@ export class MyRequestsComponent implements OnInit {
   title = '';
   description = '';
 
+  editingId: string | null = null;
+  editTitle = '';
+  editDescription = '';
+  editSaving = false;
+  editError = '';
+
   ngOnInit(): void {
     this.load();
   }
@@ -78,6 +84,60 @@ export class MyRequestsComponent implements OnInit {
       error: () => {
         this.submitError = 'Failed to submit request. Please try again.';
         this.submitting = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  startEdit(req: RequestItem): void {
+    this.editingId = req.id;
+    this.editTitle = req.title;
+    this.editDescription = req.description;
+    this.editError = '';
+  }
+
+  cancelEdit(): void {
+    this.editingId = null;
+    this.editError = '';
+  }
+
+  saveEdit(req: RequestItem): void {
+    if (!this.editTitle.trim() || !this.editDescription.trim()) {
+      this.editError = 'Title and description are required.';
+      return;
+    }
+    this.editSaving = true;
+    this.editError = '';
+
+    this.requestService.updateMyRequest(req.id, {
+      title: this.editTitle.trim(),
+      description: this.editDescription.trim()
+    }).subscribe({
+      next: updated => {
+        req.title = updated.title;
+        req.description = updated.description;
+        req.updatedAt = updated.updatedAt;
+        this.editingId = null;
+        this.editSaving = false;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.editError = 'Failed to save changes. Please try again.';
+        this.editSaving = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  cancelRequest(req: RequestItem): void {
+    if (!confirm('Cancel this request? This cannot be undone.')) return;
+
+    this.requestService.cancelMyRequest(req.id).subscribe({
+      next: () => {
+        this.requests = this.requests.filter(r => r.id !== req.id);
+        this.cdr.detectChanges();
+      },
+      error: () => {
         this.cdr.detectChanges();
       }
     });

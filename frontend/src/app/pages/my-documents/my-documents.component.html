@@ -11,6 +11,23 @@
     </div>
   </div>
 
+  <!-- Search bar -->
+  @if (!isLoading && !error && documents.length > 0) {
+    <div class="search-bar-wrap">
+      <div class="search-bar">
+        <input
+          class="search-input"
+          type="text"
+          placeholder="Search by name or filename…"
+          [(ngModel)]="searchInput"
+        />
+        @if (searchInput) {
+          <button class="clear-btn" type="button" (click)="clearSearch()">✕ Clear</button>
+        }
+      </div>
+    </div>
+  }
+
   <!-- Document list -->
   <div class="docs-content">
 
@@ -26,17 +43,23 @@
         <p class="error-text">{{ error }}</p>
       </div>
 
-    } @else if (documents.length === 0) {
+    } @else if (filteredDocuments.length === 0) {
       <div class="empty-state">
         <div class="empty-icon" aria-hidden="true">📄</div>
-        <h2 class="empty-title">No documents yet</h2>
-        <p class="empty-subtitle">Upload your first document to get started.</p>
-        <a routerLink="/my-documents/create" class="upload-btn">+ Upload Document</a>
+        @if (searchInput) {
+          <h2 class="empty-title">No results found</h2>
+          <p class="empty-subtitle">No documents match "<strong>{{ searchInput }}</strong>".</p>
+          <button class="upload-btn" type="button" (click)="clearSearch()">Clear search</button>
+        } @else {
+          <h2 class="empty-title">No documents yet</h2>
+          <p class="empty-subtitle">Upload your first document to get started.</p>
+          <a routerLink="/my-documents/create" class="upload-btn">+ Upload Document</a>
+        }
       </div>
 
     } @else {
       <div class="doc-list">
-        @for (doc of documents; track doc.id) {
+        @for (doc of filteredDocuments; track doc.id) {
           <div class="doc-card" (click)="openDocument(doc.id)" role="button" tabindex="0"
             (keydown.enter)="openDocument(doc.id)">
             <div class="doc-main">

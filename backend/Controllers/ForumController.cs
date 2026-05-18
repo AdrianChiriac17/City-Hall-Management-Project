@@ -24,16 +24,24 @@ public class ForumController(
 
     private const long MaxFileSizeBytes = 5 * 1024 * 1024;
 
-    // ── GET /api/forum/threads?page=1&pageSize=20 ──────────────────────────
+    // ── GET /api/forum/threads?page=1&pageSize=20&search= ─────────────────
     [HttpGet("threads")]
-    public async Task<IActionResult> GetThreads(int page = 1, int pageSize = 20)
+    public async Task<IActionResult> GetThreads(int page = 1, int pageSize = 20, string? search = null)
     {
         if (page < 1) page = 1;
         if (pageSize is < 1 or > 100) pageSize = 20;
 
-        var totalCount = await dbContext.ForumThreads.CountAsync();
+        var query = dbContext.ForumThreads.AsQueryable();
 
-        var items = await dbContext.ForumThreads
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            var term = search.Trim();
+            query = query.Where(t => t.Title.Contains(term) || t.Content.Contains(term));
+        }
+
+        var totalCount = await query.CountAsync();
+
+        var items = await query
             .Include(t => t.Author)
             .OrderByDescending(t => t.UpdatedAt)
             .Skip((page - 1) * pageSize)
@@ -185,6 +193,58 @@ public class ForumController(
         return Ok(MapAttachment(attachment));
     }
 
+    // ── PUT /api/forum/threads/{id} ───────────────────────────────────────
+    [HttpPut("threads/{id:guid}")]
+    public async Task<IActionResult> UpdateThread(Guid id, [FromBody] UpdateThreadDto dto)
+    {
+        var user = await userManager.GetUserAsync(User);
+        if (user is null) return Unauthorized();
+
+        var thread = await dbContext.ForumThreads.FindAsync(id);
+        if (thread is null) return NotFound(new { message = "Thread not found." });
+        if (thread.AuthorUserId != user.Id) return Forbid();
+
+        thread.Title = dto.Title.Trim();
+        thread.Content = dto.Content.Trim();
+        thread.UpdatedAt = DateTime.UtcNow;
+
+        await dbContext.SaveChangesAsync();
+
+        await dbContext.Entry(thread).Reference(t => t.Author).LoadAsync();
+        await dbContext.Entry(thread).Collection(t => t.Attachments).LoadAsync();
+        await dbContext.Entry(thread).Collection(t => t.Posts).LoadAsync();
+
+        return Ok(MapThreadDetail(thread));
+    }
+
+    // ── PUT /api/forum/posts/{id} ─────────────────────────────────────────
+    [HttpPut("posts/{id:guid}")]
+    public async Task<IActionResult> UpdatePost(Guid id, [FromBody] UpdatePostDto dto)
+    {
+        var user = await userManager.GetUserAsync(User);
+        if (user is null) return Unauthorized();
+
+        var post = await dbContext.ForumPosts.FindAsync(id);
+        if (post is null) return NotFound(new { message = "Post not found." });
+        if (post.AuthorUserId != user.Id) return Forbid();
+
+        post.Content = dto.Content.Trim();
+        post.UpdatedAt = DateTime.UtcNow;
+
+        await dbContext.SaveChangesAsync();
+
+        return Ok(new ForumPostDto
+        {
+            Id = post.Id,
+            Content = post.Content,
+            AuthorName = $"{user.FirstName} {user.LastName}",
+            AuthorId = user.Id,
+            CreatedAt = post.CreatedAt,
+            UpdatedAt = post.UpdatedAt,
+            Attachments = []
+        });
+    }
+
     // ── PATCH /api/forum/threads/{id}/close ───────────────────────────────
     [HttpPatch("threads/{id:guid}/close")]
     [Authorize(Roles = "Forum Administrator,System Administrator")]
@@ -202,15 +262,21 @@ public class ForumController(
 
     // ── DELETE /api/forum/threads/{id} ────────────────────────────────────
     [HttpDelete("threads/{id:guid}")]
-    [Authorize(Roles = "Forum Administrator,System Administrator")]
     public async Task<IActionResult> DeleteThread(Guid id)
     {
+        var user = await userManager.GetUserAsync(User);
+        if (user is null) return Unauthorized();
+
         var thread = await dbContext.ForumThreads
             .Include(t => t.Attachments)
             .Include(t => t.Posts).ThenInclude(p => p.Attachments)
             .FirstOrDefaultAsync(t => t.Id == id);
 
         if (thread is null) return NotFound(new { message = "Thread not found." });
+
+        var isModerator = User.IsInRole("Forum Administrator") || User.IsInRole("System Administrator");
+        if (thread.AuthorUserId != user.Id && !isModerator)
+            return Forbid();
 
         // Collect all file paths before deleting DB records
         var paths = thread.Attachments.Select(a => a.StoragePath)
@@ -228,14 +294,20 @@ public class ForumController(
 
     // ── DELETE /api/forum/posts/{id} ──────────────────────────────────────
     [HttpDelete("posts/{id:guid}")]
-    [Authorize(Roles = "Forum Administrator,System Administrator")]
     public async Task<IActionResult> DeletePost(Guid id)
     {
+        var user = await userManager.GetUserAsync(User);
+        if (user is null) return Unauthorized();
+
         var post = await dbContext.ForumPosts
             .Include(p => p.Attachments)
             .FirstOrDefaultAsync(p => p.Id == id);
 
         if (post is null) return NotFound(new { message = "Post not found." });
+
+        var isModerator = User.IsInRole("Forum Administrator") || User.IsInRole("System Administrator");
+        if (post.AuthorUserId != user.Id && !isModerator)
+            return Forbid();
 
         var paths = post.Attachments.Select(a => a.StoragePath).ToList();
 

@@ -100,9 +100,33 @@
   color: #fff;
 }
 
-/* ===== DELETE BUTTON ON POST CARDS ===== */
-.post-delete-btn {
+/* ===== POST ACTION BUTTONS ===== */
+.post-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
   margin-left: auto;
+  flex-shrink: 0;
+}
+
+.post-edit-btn {
+  background: none;
+  border: 1px solid #c8d8ea;
+  border-radius: 6px;
+  padding: 0.25rem 0.65rem;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #3a7abf;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.post-edit-btn:hover {
+  background: #eef4fb;
+}
+
+.post-delete-btn {
   background: none;
   border: 1px solid #f5c2bc;
   border-radius: 6px;
@@ -118,6 +142,88 @@
 
 .post-delete-btn:hover {
   background: #fdf0ee;
+}
+
+/* ===== INLINE EDIT FORM ===== */
+.inline-edit {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-top: 0.5rem;
+}
+
+.edit-title-input {
+  width: 100%;
+  padding: 0.6rem 0.9rem;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1a2a3a;
+  background: #f9fafb;
+  border: 1.5px solid #dce4ee;
+  border-radius: 10px;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.18s;
+}
+
+.edit-title-input:focus {
+  border-color: #3a7abf;
+  background: #fff;
+}
+
+.inline-edit-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.save-btn {
+  height: 34px;
+  padding: 0 1.1rem;
+  background: #3a7abf;
+  color: #fff;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.save-btn:hover:not(:disabled) {
+  background: #2f65a0;
+}
+
+.save-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.cancel-btn {
+  height: 34px;
+  padding: 0 1.1rem;
+  background: transparent;
+  color: #8a9bb0;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  border: 1px solid #dce4ee;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.cancel-btn:hover {
+  background: #f0f2f5;
+  color: #1a2a3a;
+}
+
+.inline-edit-error {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.82rem;
+  color: #c0392b;
+  margin: 0;
 }
 
 /* ===== CONTENT AREA ===== */

@@ -38,11 +38,13 @@
             <span class="closed-badge">Closed</span>
           }
         </div>
-        @if (isModerator) {
+        @if (isModerator || thread.authorId === currentUserId) {
           <div class="mod-actions">
-            <button type="button" class="mod-btn mod-btn--close" (click)="toggleClose()">
-              {{ thread.isClosed ? 'Reopen' : 'Close' }}
-            </button>
+            @if (isModerator) {
+              <button type="button" class="mod-btn mod-btn--close" (click)="toggleClose()">
+                {{ thread.isClosed ? 'Reopen' : 'Close' }}
+              </button>
+            }
             <button type="button" class="mod-btn mod-btn--delete" (click)="deleteThread()">
               Delete Thread
             </button>
@@ -61,8 +63,28 @@
             <span class="post-author">{{ thread.authorName }}</span>
             <span class="post-date">{{ thread.createdAt | date:'MMM d, yyyy · h:mm a' }}</span>
           </div>
+          @if (!isEditingThread && thread.authorId === currentUserId) {
+            <button type="button" class="post-edit-btn" (click)="startEditThread()">Edit</button>
+          }
         </div>
-        <div class="post-content">{{ thread.content }}</div>
+
+        @if (isEditingThread) {
+          <div class="inline-edit">
+            @if (editThreadError) {
+              <p class="inline-edit-error">{{ editThreadError }}</p>
+            }
+            <input class="edit-title-input" type="text" [(ngModel)]="editThreadTitle" maxlength="200" placeholder="Title" />
+            <textarea class="content-textarea" [(ngModel)]="editThreadContent" rows="6" maxlength="10000"></textarea>
+            <div class="inline-edit-actions">
+              <button type="button" class="save-btn" (click)="saveEditThread()" [disabled]="editThreadSaving">
+                {{ editThreadSaving ? 'Saving…' : 'Save' }}
+              </button>
+              <button type="button" class="cancel-btn" (click)="cancelEditThread()">Cancel</button>
+            </div>
+          </div>
+        } @else {
+          <div class="post-content">{{ thread.content }}</div>
+        }
 
         @if (thread.attachments.length > 0) {
           <div class="attachment-grid">
@@ -90,12 +112,33 @@
                   <span class="post-author">{{ post.authorName }}</span>
                   <span class="post-date">{{ post.createdAt | date:'MMM d, yyyy · h:mm a' }}</span>
                 </div>
-                @if (isModerator) {
-                  <button type="button" class="post-delete-btn" (click)="deletePost(post.id)"
-                    aria-label="Delete reply">Delete</button>
-                }
+                <div class="post-actions">
+                  @if (post.authorId === currentUserId && editingPostId !== post.id) {
+                    <button type="button" class="post-edit-btn" (click)="startEditPost(post)">Edit</button>
+                  }
+                  @if (isModerator || post.authorId === currentUserId) {
+                    <button type="button" class="post-delete-btn" (click)="deletePost(post.id)"
+                      aria-label="Delete reply">Delete</button>
+                  }
+                </div>
               </div>
-              <div class="post-content">{{ post.content }}</div>
+
+              @if (editingPostId === post.id) {
+                <div class="inline-edit">
+                  @if (editPostError) {
+                    <p class="inline-edit-error">{{ editPostError }}</p>
+                  }
+                  <textarea class="content-textarea" [(ngModel)]="editPostContent[post.id]" rows="4" maxlength="10000"></textarea>
+                  <div class="inline-edit-actions">
+                    <button type="button" class="save-btn" (click)="saveEditPost(post)" [disabled]="editPostSaving">
+                      {{ editPostSaving ? 'Saving…' : 'Save' }}
+                    </button>
+                    <button type="button" class="cancel-btn" (click)="cancelEditPost()">Cancel</button>
+                  </div>
+                </div>
+              } @else {
+                <div class="post-content">{{ post.content }}</div>
+              }
 
               @if (post.attachments.length > 0) {
                 <div class="attachment-grid">

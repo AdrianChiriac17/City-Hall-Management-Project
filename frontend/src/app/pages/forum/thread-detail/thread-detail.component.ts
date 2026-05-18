@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { finalize, forkJoin } from 'rxjs';
 import { ForumService, ForumThreadDetail, ForumPost } from '../../../services/forum.service';
@@ -12,7 +12,7 @@ const MAX_SIZE_BYTES = 5 * 1024 * 1024;
 @Component({
   selector: 'app-thread-detail',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, DatePipe],
+  imports: [ReactiveFormsModule, FormsModule, RouterLink, DatePipe],
   templateUrl: './thread-detail.component.html',
   styleUrls: ['./thread-detail.component.css']
 })
@@ -37,6 +37,19 @@ export class ThreadDetailComponent implements OnInit {
   replyIsSuccess = false;
   selectedFiles: File[] = [];
   fileError = '';
+
+  // Thread editing
+  isEditingThread = false;
+  editThreadTitle = '';
+  editThreadContent = '';
+  editThreadSaving = false;
+  editThreadError = '';
+
+  // Post editing
+  editingPostId: string | null = null;
+  editPostContent: Record<string, string> = {};
+  editPostSaving = false;
+  editPostError = '';
 
   get currentUserId(): string | null {
     const user = this.authService.currentUser;
@@ -190,6 +203,79 @@ export class ThreadDetailComponent implements OnInit {
     this.forumService.deletePost(postId).subscribe({
       next: () => {
         this.thread!.posts = this.thread!.posts.filter(p => p.id !== postId);
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  startEditThread(): void {
+    if (!this.thread) return;
+    this.editThreadTitle = this.thread.title;
+    this.editThreadContent = this.thread.content;
+    this.editThreadError = '';
+    this.isEditingThread = true;
+  }
+
+  cancelEditThread(): void {
+    this.isEditingThread = false;
+    this.editThreadError = '';
+  }
+
+  saveEditThread(): void {
+    if (!this.thread) return;
+    const title = this.editThreadTitle.trim();
+    const content = this.editThreadContent.trim();
+    if (!title || !content) { this.editThreadError = 'Title and content are required.'; return; }
+
+    this.editThreadSaving = true;
+    this.editThreadError = '';
+
+    this.forumService.updateThread(this.thread.id, { title, content }).subscribe({
+      next: updated => {
+        this.thread!.title = updated.title;
+        this.thread!.content = updated.content;
+        this.thread!.updatedAt = updated.updatedAt;
+        this.isEditingThread = false;
+        this.editThreadSaving = false;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.editThreadError = 'Failed to save changes. Please try again.';
+        this.editThreadSaving = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  startEditPost(post: ForumPost): void {
+    this.editingPostId = post.id;
+    this.editPostContent[post.id] = post.content;
+    this.editPostError = '';
+  }
+
+  cancelEditPost(): void {
+    this.editingPostId = null;
+    this.editPostError = '';
+  }
+
+  saveEditPost(post: ForumPost): void {
+    const content = (this.editPostContent[post.id] ?? '').trim();
+    if (!content) { this.editPostError = 'Reply cannot be empty.'; return; }
+
+    this.editPostSaving = true;
+    this.editPostError = '';
+
+    this.forumService.updatePost(post.id, { content }).subscribe({
+      next: updated => {
+        post.content = updated.content;
+        post.updatedAt = updated.updatedAt;
+        this.editingPostId = null;
+        this.editPostSaving = false;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.editPostError = 'Failed to save changes. Please try again.';
+        this.editPostSaving = false;
         this.cdr.detectChanges();
       }
     });

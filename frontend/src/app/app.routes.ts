@@ -14,6 +14,8 @@ import { DocumentApprovalComponent } from './pages/admin/document-approval/docum
 import { DocumentReviewComponent } from './pages/admin/document-review/document-review.component';
 import { MyRequestsComponent } from './pages/my-requests/my-requests.component';
 import { RequestsComponent } from './pages/requests/requests.component';
+import { AnnouncementsComponent } from './pages/announcements/announcements.component';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { authGuard } from './guards/auth.guard';
 import { roleGuard } from './guards/role.guard';
 
@@ -92,6 +94,16 @@ export const routes: Routes = [
   {
     path: 'requests',
     component: RequestsComponent,
+    canActivate: [roleGuard(['Employee', 'Department Manager', 'System Administrator'])]
+  },
+  {
+    path: 'announcements',
+    component: AnnouncementsComponent,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'dashboard',
+    component: DashboardComponent,
     canActivate: [roleGuard(['Employee', 'Department Manager', 'System Administrator'])]
   },
 
