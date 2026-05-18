@@ -202,15 +202,21 @@ public class ForumController(
 
     // ── DELETE /api/forum/threads/{id} ────────────────────────────────────
     [HttpDelete("threads/{id:guid}")]
-    [Authorize(Roles = "Forum Administrator,System Administrator")]
     public async Task<IActionResult> DeleteThread(Guid id)
     {
+        var user = await userManager.GetUserAsync(User);
+        if (user is null) return Unauthorized();
+
         var thread = await dbContext.ForumThreads
             .Include(t => t.Attachments)
             .Include(t => t.Posts).ThenInclude(p => p.Attachments)
             .FirstOrDefaultAsync(t => t.Id == id);
 
         if (thread is null) return NotFound(new { message = "Thread not found." });
+
+        var isModerator = User.IsInRole("Forum Administrator") || User.IsInRole("System Administrator");
+        if (thread.AuthorUserId != user.Id && !isModerator)
+            return Forbid();
 
         // Collect all file paths before deleting DB records
         var paths = thread.Attachments.Select(a => a.StoragePath)
@@ -228,14 +234,20 @@ public class ForumController(
 
     // ── DELETE /api/forum/posts/{id} ──────────────────────────────────────
     [HttpDelete("posts/{id:guid}")]
-    [Authorize(Roles = "Forum Administrator,System Administrator")]
     public async Task<IActionResult> DeletePost(Guid id)
     {
+        var user = await userManager.GetUserAsync(User);
+        if (user is null) return Unauthorized();
+
         var post = await dbContext.ForumPosts
             .Include(p => p.Attachments)
             .FirstOrDefaultAsync(p => p.Id == id);
 
         if (post is null) return NotFound(new { message = "Post not found." });
+
+        var isModerator = User.IsInRole("Forum Administrator") || User.IsInRole("System Administrator");
+        if (post.AuthorUserId != user.Id && !isModerator)
+            return Forbid();
 
         var paths = post.Attachments.Select(a => a.StoragePath).ToList();
 

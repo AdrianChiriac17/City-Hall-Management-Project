@@ -38,11 +38,13 @@
             <span class="closed-badge">Closed</span>
           }
         </div>
-        @if (isModerator) {
+        @if (isModerator || thread.authorId === currentUserId) {
           <div class="mod-actions">
-            <button type="button" class="mod-btn mod-btn--close" (click)="toggleClose()">
-              {{ thread.isClosed ? 'Reopen' : 'Close' }}
-            </button>
+            @if (isModerator) {
+              <button type="button" class="mod-btn mod-btn--close" (click)="toggleClose()">
+                {{ thread.isClosed ? 'Reopen' : 'Close' }}
+              </button>
+            }
             <button type="button" class="mod-btn mod-btn--delete" (click)="deleteThread()">
               Delete Thread
             </button>
@@ -90,7 +92,7 @@
                   <span class="post-author">{{ post.authorName }}</span>
                   <span class="post-date">{{ post.createdAt | date:'MMM d, yyyy · h:mm a' }}</span>
                 </div>
-                @if (isModerator) {
+                @if (isModerator || post.authorId === currentUserId) {
                   <button type="button" class="post-delete-btn" (click)="deletePost(post.id)"
                     aria-label="Delete reply">Delete</button>
                 }
