@@ -185,6 +185,58 @@ public class ForumController(
         return Ok(MapAttachment(attachment));
     }
 
+    // ── PUT /api/forum/threads/{id} ───────────────────────────────────────
+    [HttpPut("threads/{id:guid}")]
+    public async Task<IActionResult> UpdateThread(Guid id, [FromBody] UpdateThreadDto dto)
+    {
+        var user = await userManager.GetUserAsync(User);
+        if (user is null) return Unauthorized();
+
+        var thread = await dbContext.ForumThreads.FindAsync(id);
+        if (thread is null) return NotFound(new { message = "Thread not found." });
+        if (thread.AuthorUserId != user.Id) return Forbid();
+
+        thread.Title = dto.Title.Trim();
+        thread.Content = dto.Content.Trim();
+        thread.UpdatedAt = DateTime.UtcNow;
+
+        await dbContext.SaveChangesAsync();
+
+        await dbContext.Entry(thread).Reference(t => t.Author).LoadAsync();
+        await dbContext.Entry(thread).Collection(t => t.Attachments).LoadAsync();
+        await dbContext.Entry(thread).Collection(t => t.Posts).LoadAsync();
+
+        return Ok(MapThreadDetail(thread));
+    }
+
+    // ── PUT /api/forum/posts/{id} ─────────────────────────────────────────
+    [HttpPut("posts/{id:guid}")]
+    public async Task<IActionResult> UpdatePost(Guid id, [FromBody] UpdatePostDto dto)
+    {
+        var user = await userManager.GetUserAsync(User);
+        if (user is null) return Unauthorized();
+
+        var post = await dbContext.ForumPosts.FindAsync(id);
+        if (post is null) return NotFound(new { message = "Post not found." });
+        if (post.AuthorUserId != user.Id) return Forbid();
+
+        post.Content = dto.Content.Trim();
+        post.UpdatedAt = DateTime.UtcNow;
+
+        await dbContext.SaveChangesAsync();
+
+        return Ok(new ForumPostDto
+        {
+            Id = post.Id,
+            Content = post.Content,
+            AuthorName = $"{user.FirstName} {user.LastName}",
+            AuthorId = user.Id,
+            CreatedAt = post.CreatedAt,
+            UpdatedAt = post.UpdatedAt,
+            Attachments = []
+        });
+    }
+
     // ── PATCH /api/forum/threads/{id}/close ───────────────────────────────
     [HttpPatch("threads/{id:guid}/close")]
     [Authorize(Roles = "Forum Administrator,System Administrator")]

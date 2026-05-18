@@ -110,6 +110,22 @@ export class ForumService {
     );
   }
 
+  updateThread(threadId: string, data: { title: string; content: string }): Observable<ForumThreadDetail> {
+    return this.http.put<ForumThreadDetail>(
+      `${this.apiUrl}/threads/${threadId}`,
+      data,
+      { withCredentials: true }
+    );
+  }
+
+  updatePost(postId: string, data: { content: string }): Observable<ForumPost> {
+    return this.http.put<ForumPost>(
+      `${this.apiUrl}/posts/${postId}`,
+      data,
+      { withCredentials: true }
+    );
+  }
+
   toggleThreadClosed(threadId: string): Observable<{ isClosed: boolean }> {
     return this.http.patch<{ isClosed: boolean }>(
       `${this.apiUrl}/threads/${threadId}/close`,
