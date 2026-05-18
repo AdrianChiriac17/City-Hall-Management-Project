@@ -24,16 +24,24 @@ public class ForumController(
 
     private const long MaxFileSizeBytes = 5 * 1024 * 1024;
 
-    // ── GET /api/forum/threads?page=1&pageSize=20 ──────────────────────────
+    // ── GET /api/forum/threads?page=1&pageSize=20&search= ─────────────────
     [HttpGet("threads")]
-    public async Task<IActionResult> GetThreads(int page = 1, int pageSize = 20)
+    public async Task<IActionResult> GetThreads(int page = 1, int pageSize = 20, string? search = null)
     {
         if (page < 1) page = 1;
         if (pageSize is < 1 or > 100) pageSize = 20;
 
-        var totalCount = await dbContext.ForumThreads.CountAsync();
+        var query = dbContext.ForumThreads.AsQueryable();
 
-        var items = await dbContext.ForumThreads
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            var term = search.Trim();
+            query = query.Where(t => t.Title.Contains(term) || t.Content.Contains(term));
+        }
+
+        var totalCount = await query.CountAsync();
+
+        var items = await query
             .Include(t => t.Author)
             .OrderByDescending(t => t.UpdatedAt)
             .Skip((page - 1) * pageSize)

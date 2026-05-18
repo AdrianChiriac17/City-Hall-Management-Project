@@ -11,6 +11,26 @@
     </div>
   </div>
 
+  <!-- Search bar -->
+  <div class="search-bar-wrap">
+    <div class="search-bar">
+      <input
+        class="search-input"
+        type="text"
+        placeholder="Search threads by title or content…"
+        [(ngModel)]="searchInput"
+        (keydown.enter)="search()"
+      />
+      <button class="search-btn" type="button" (click)="search()">Search</button>
+      @if (activeSearch) {
+        <button class="clear-btn" type="button" (click)="clearSearch()">✕ Clear</button>
+      }
+    </div>
+    @if (activeSearch) {
+      <p class="search-label">Results for "<strong>{{ activeSearch }}</strong>"</p>
+    }
+  </div>
+
   <!-- Thread list -->
   <div class="forum-content">
 
@@ -30,9 +50,15 @@
     } @else if (!result || result.items.length === 0) {
       <div class="empty-state">
         <div class="empty-icon" aria-hidden="true">💬</div>
-        <h2 class="empty-title">No threads yet</h2>
-        <p class="empty-subtitle">Be the first to start a discussion.</p>
-        <a routerLink="/forum/new" class="new-thread-btn">+ New Thread</a>
+        @if (activeSearch) {
+          <h2 class="empty-title">No results found</h2>
+          <p class="empty-subtitle">No threads match "<strong>{{ activeSearch }}</strong>".</p>
+          <button class="retry-btn" (click)="clearSearch()">Clear search</button>
+        } @else {
+          <h2 class="empty-title">No threads yet</h2>
+          <p class="empty-subtitle">Be the first to start a discussion.</p>
+          <a routerLink="/forum/new" class="new-thread-btn">+ New Thread</a>
+        }
       </div>
 
     } @else {

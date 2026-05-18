@@ -60,11 +60,10 @@ export class ForumService {
 
   constructor(private readonly http: HttpClient) {}
 
-  getThreads(page = 1, pageSize = 20): Observable<PagedResult<ForumThreadListItem>> {
-    return this.http.get<PagedResult<ForumThreadListItem>>(
-      `${this.apiUrl}/threads?page=${page}&pageSize=${pageSize}`,
-      { withCredentials: true }
-    );
+  getThreads(page = 1, pageSize = 20, search = ''): Observable<PagedResult<ForumThreadListItem>> {
+    let url = `${this.apiUrl}/threads?page=${page}&pageSize=${pageSize}`;
+    if (search.trim()) url += `&search=${encodeURIComponent(search.trim())}`;
+    return this.http.get<PagedResult<ForumThreadListItem>>(url, { withCredentials: true });
   }
 
   getThread(id: string): Observable<ForumThreadDetail> {
