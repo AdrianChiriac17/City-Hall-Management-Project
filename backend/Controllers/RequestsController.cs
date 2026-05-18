@@ -119,6 +119,55 @@ public class RequestsController(
         return Created(string.Empty, request);
     }
 
+    [HttpPatch("my/{id:guid}")]
+    [Authorize(Roles = "Citizen")]
+    public async Task<ActionResult<Request>> UpdateMyCitizenRequest(Guid id, UpdateMyRequestDto dto)
+    {
+        var profileId = await ResolveProfileIdAsync();
+        if (profileId is null)
+            return NotFound(new { message = "Citizen profile not found." });
+
+        var request = await dbContext.Requests
+            .FirstOrDefaultAsync(r => r.Id == id && r.CitizenProfileId == profileId.Value);
+
+        if (request is null)
+            return NotFound();
+
+        if (request.Status != "Submitted")
+            return BadRequest(new { message = "Only 'Submitted' requests can be edited." });
+
+        request.Title = dto.Title.Trim();
+        request.Description = dto.Description.Trim();
+        request.UpdatedAt = DateTime.UtcNow;
+
+        await dbContext.SaveChangesAsync();
+
+        return Ok(request);
+    }
+
+    [HttpDelete("my/{id:guid}")]
+    [Authorize(Roles = "Citizen")]
+    public async Task<IActionResult> CancelMyCitizenRequest(Guid id)
+    {
+        var profileId = await ResolveProfileIdAsync();
+        if (profileId is null)
+            return NotFound(new { message = "Citizen profile not found." });
+
+        var request = await dbContext.Requests
+            .FirstOrDefaultAsync(r => r.Id == id && r.CitizenProfileId == profileId.Value);
+
+        if (request is null)
+            return NotFound();
+
+        if (request.Status != "Submitted")
+            return BadRequest(new { message = "Only 'Submitted' requests can be cancelled." });
+
+        dbContext.Requests.Remove(request);
+        await dbContext.SaveChangesAsync();
+
+        return NoContent();
+    }
+
     [HttpPut("{id:guid}/status")]
     [Authorize(Roles = "Employee,Department Manager,System Administrator")]
     public async Task<ActionResult<Request>> UpdateStatus(Guid id, UpdateRequestStatusDto dto)

@@ -78,21 +78,55 @@
     } @else {
       <div class="request-list">
         @for (req of requests; track req.id) {
-          <div class="request-card">
-            <div class="request-main">
-              <div class="request-icon" aria-hidden="true">📋</div>
-              <div class="request-body">
-                <h2 class="request-title">{{ req.title }}</h2>
-                <p class="request-meta">
-                  {{ req.createdAt | date:'MMM d, yyyy' }}
-                  @if (req.department) {
-                    &nbsp;·&nbsp;{{ req.department.name }}
-                  }
-                </p>
-                <p class="request-desc">{{ req.description }}</p>
+          <div class="request-card" [class.request-card--editing]="editingId === req.id">
+
+            @if (editingId === req.id) {
+              <div class="inline-edit">
+                <h3 class="inline-edit-title">Edit Request</h3>
+                @if (editError) {
+                  <p class="inline-edit-error">{{ editError }}</p>
+                }
+                <div class="field">
+                  <label class="label">Title</label>
+                  <input class="input" type="text" [(ngModel)]="editTitle" maxlength="200" />
+                </div>
+                <div class="field">
+                  <label class="label">Description</label>
+                  <textarea class="textarea" [(ngModel)]="editDescription" rows="4"></textarea>
+                </div>
+                <div class="inline-edit-actions">
+                  <button class="save-btn" type="button" (click)="saveEdit(req)" [disabled]="editSaving">
+                    {{ editSaving ? 'Saving…' : 'Save' }}
+                  </button>
+                  <button class="cancel-edit-btn" type="button" (click)="cancelEdit()">Cancel</button>
+                </div>
               </div>
-            </div>
-            <span class="status-badge {{ statusClass(req.status) }}">{{ req.status }}</span>
+
+            } @else {
+              <div class="request-main">
+                <div class="request-icon" aria-hidden="true">📋</div>
+                <div class="request-body">
+                  <h2 class="request-title">{{ req.title }}</h2>
+                  <p class="request-meta">
+                    {{ req.createdAt | date:'MMM d, yyyy' }}
+                    @if (req.department) {
+                      &nbsp;·&nbsp;{{ req.department.name }}
+                    }
+                  </p>
+                  <p class="request-desc">{{ req.description }}</p>
+                </div>
+              </div>
+              <div class="card-right">
+                <span class="status-badge {{ statusClass(req.status) }}">{{ req.status }}</span>
+                @if (req.status === 'Submitted') {
+                  <div class="card-actions">
+                    <button class="edit-btn" type="button" (click)="startEdit(req)">Edit</button>
+                    <button class="cancel-req-btn" type="button" (click)="cancelRequest(req)">Cancel</button>
+                  </div>
+                }
+              </div>
+            }
+
           </div>
         }
       </div>
